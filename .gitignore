@@ -1,0 +1,10 @@
+/*
+!/*.c
+!/*.h
+
+/include/*
+/include/*.c
+/include/*.h
+
+Debug
+Release
