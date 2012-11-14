@@ -1,12 +1,12 @@
 /*
  * main.c
  *
- * Created: 09.11.2012 14:59:06
- *  Author: mkreider
+ * Created: 13.11.2012 13:45:06
+ *  Author: pburkhar
  */ 
-
-
 #include <avr/io.h>
+#include "include/adc.h"
+#include "include/median.h"
 
 int main(void)
 {
