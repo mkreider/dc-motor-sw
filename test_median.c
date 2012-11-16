@@ -6,14 +6,15 @@
  */ 
 #include <avr/io.h>
 #include <util/delay.h>
-#include "include/uart.h"
+#include "uart.h"
 
 char text1[] = "Hallo Welt!";
 char text[]= "Nich schon wieder!";
 
 uint8_t counter = 0;
-uint8_t adc[]={4, 3, 5, 2, 1};
-
+/*uint8_t adc[]={4, 3, 5, 2, 1};*/
+uint8_t	adc[]={5, 7, 6};
+uint8_t x;
 
 void init(void)
 {
@@ -48,7 +49,103 @@ void swap(uint8_t *a, uint8_t *b)
 	
 void median(void)		
 {
+//### NEUE SCHLEIFE (3 Zahlen) ###____________________________________
 
+	if(adc[0]<adc[1])
+	{	if(adc[0]<adc[2])
+		{	if(adc[1]<adc[2])
+			{	x = adc[1];				
+			}
+			else if(adc[1]>adc[2])
+			{	x = adc[2];				
+			}						
+		}				
+	}
+
+
+	if(adc[0]>adc[1])
+	{	if(adc[1]<adc[2])
+		{	if(adc[0]<adc[2])
+			{	x = adc[0];
+			}
+			else if(adc[0]>adc[2])
+			{	x = adc[2];				
+			}			
+		}			
+	}
+
+
+	if(adc[0]>adc[2])
+	{	if(adc[1]>adc[2])
+		{	if(adc[0]<adc[1])
+			{	x = adc[0];				
+			}			
+			else if(adc[0]>adc[1])
+			{	x = adc[1];			
+			}
+		}			
+	}
+	
+	
+//### ALTE SCHLEIFE (3 ZAHLEN) ###_______________________________	
+	
+	
+// 	if(adc[0]<adc[1])
+// 	{	if(adc[1]<adc[2])
+// 		{	if(adc[0]<adc[2])
+// 			{	x = adc[1];
+// 			}			
+// 		}			
+// 	}
+// 	
+// 	
+// 	if(adc[0]<adc[1])
+// 	{	if(adc[1]>adc[2])
+// 		{	if(adc[0]<adc[2])
+// 			{	x = adc[2];
+// 			}			
+// 		}			
+// 	}
+// 	
+// 	
+// 	
+// 	if(adc[0]>adc[1])
+// 	{	if(adc[1]<adc[2])
+// 		{	if(adc[0]<adc[2])
+// 			{	x = adc[0];		
+// 			}			
+// 		}		
+// 	}
+// 	
+// 		
+// 		if(adc[0]>adc[1])
+// 	{	if(adc[1]<adc[2])
+// 		{	if(adc[0]>adc[2])
+// 			{	x = adc[2];
+// 			}			
+// 		}			
+// 	}
+// 		
+// 		
+// 		if(adc[0]<adc[1])
+// 	{	if(adc[1]>adc[2])
+// 		{	if(adc[0]>adc[2])
+// 			{	x = adc[0];
+// 			}			
+// 		}			
+// 	}
+// 	
+// 		
+// 	if(adc[0]>adc[1])
+// 	{	if(adc[1]>adc[2])
+// 		{	if(adc[0]>adc[2])
+// 			{	x = adc[1];
+// 			}			
+// 		}			
+// 	}
+
+//### ALTE SWAP-SCHLEIFE###___________________________
+/*
 if(adc[0] > adc[1])
 {
 	swap(adc[0], adc[1]);
@@ -89,7 +186,7 @@ if(adc[2] < adc[1])
 		swap(adc[2], adc[3]);
 	}
 }		
-
+*/
 		}
 
 
@@ -102,7 +199,12 @@ int main(void)
 	
     while(1)
     {
-        for(i=0;i<5;i++) uartputc(adc[i]);
+        _delay_ms(1000);
+		for(i=0;i<3;i++) uartputc(adc[i]);
+		 uartputc('\n');
 		median();	 
+		uartputc(x);
+		uartputc('\n');
+		uartputc('\n');
     }
 }
