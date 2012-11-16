@@ -1,10 +1,6 @@
-/*
-!/*.c
-!/*.h
-
-/include/*
-/include/*.c
-/include/*.h
+*.atsuo
+*.atsln
+*.cproj
 
 Debug
 Release

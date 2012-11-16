@@ -1,5 +1,5 @@
 /*
- * main.c
+ * test_median.c
  *
  * Created: 13.11.2012 13:45:06
  *  Author: pburkhar
