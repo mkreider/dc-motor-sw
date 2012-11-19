@@ -18,8 +18,7 @@ void swap(uint8_t *a, uint8_t *b)
     *b = temp;  
 }
 
-uart_putuint16((uint16_t)adc[i])
-uart_putc(' ');
+
 		
 if(adc[0] > adc[1])
 {
