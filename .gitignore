@@ -1,6 +1,7 @@
 *.atsuo
 *.atsln
 *.cproj
+*.csv
 
 Debug
 Release
