@@ -5,13 +5,13 @@
  *  Author: pburkhar
  */ 
 #include <avr/io.h>
-#include "include/adc.h"
-#include "include/median.h"
+#include "adc.h"
+#include "median.h"
 
 int main(void)
 {
     while(1)
     {
-        //TODO:: Please write your application code 
+        
     }
 }
