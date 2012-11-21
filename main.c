@@ -7,6 +7,7 @@
  */ 
 
 #include <avr/io.h>
+<<<<<<< HEAD
 #include <util/delay.h>
 #include "adc.h"
 #include "median.h"
@@ -27,6 +28,10 @@ void init(void)
 	return;		
 }
 
+=======
+#include "adc.h"
+#include "median.h"
+>>>>>>> c8945a6f1d32fae33f8905f17f5978c770e24ceb
 
 int main(void)
 {
@@ -35,6 +40,7 @@ int main(void)
 
 		
     while(1)
+<<<<<<< HEAD
     {	
 		
         uartputs("Testausgabe");
@@ -49,6 +55,10 @@ int main(void)
 		uartputc('\n');
 		_delay_ms(3000);
 		//TODO:: Please write your application code 
+=======
+    {
+        
+>>>>>>> c8945a6f1d32fae33f8905f17f5978c770e24ceb
     }
 }
 
