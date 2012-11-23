@@ -7,14 +7,18 @@
  */ 
 
 #include <avr/io.h>
-<<<<<<< HEAD
 #include <util/delay.h>
 #include "adc.h"
 #include "median.h"
 #include "uart.h"
+#include <stdio.h>
 
-uint16_t adc []={5, 3, 4, 1, 2};
-uint16_t adc_c []={5, 3, 4, 1, 2};	 
+
+
+uint16_t adc []= { 5, 40, 30, 20, 10};
+// uint16_t adc_c[];
+// 	adc_c[]=adc[];
+uint16_t adc_c []={ 50, 40, 30, 20, 10};
 uint8_t i;
 uint16_t adca[4];
 
@@ -28,39 +32,42 @@ void init(void)
 	return;		
 }
 
-=======
+
 #include "adc.h"
 #include "median.h"
->>>>>>> c8945a6f1d32fae33f8905f17f5978c770e24ceb
 
 int main(void)
 {
 	init();
-	/*uint16_t adc[]={5, 4, 3, 2, 1};*/
-
+	uint16_t adc[]={5, 4, 3, 2, 1};
+	
 		
     while(1)
-<<<<<<< HEAD
     {	
 		
         uartputs("Testausgabe");
 		uartputc('\n');
 		for(i=0;i<5;i++) {uartput_uint16(adc_c[i]); uartputc(' ');}
-		median();
+			
+		//median(&adc[0]);
+		//bubblesort(*adc, 5);
+		new_bubblesort(&adc[0],);
+		
 		uartputc('\n');
 		for(i=0;i<5;i++) {uartput_uint16(adc[i]); uartputc(' ');}
 		uartputc('\n');
 		uartput_uint16(adc[2]);
-		uartputc('\n');
+		uartputc('\n'); 
 		uartputc('\n');
 		_delay_ms(3000);
 		//TODO:: Please write your application code 
-=======
-    {
+
+		}
+		}    
         
->>>>>>> c8945a6f1d32fae33f8905f17f5978c770e24ceb
-    }
-}
+
+    
+
 
 
 
