@@ -1,9 +1,10 @@
 #include <avr/io.h>
+#include "uart.h"
 
 void uartputs(const char* text)	//nicht veränderbar wegen char das * ist zum anzeigen das es ein pointer ist
 {
 	char *ptext;	// Kopie des orginals
-	ptext = text;
+	ptext = (char*)text;
 	
 	while (*ptext != 0x00)				//soll aufhören wenn es 0x00 erreicht hat
 	{

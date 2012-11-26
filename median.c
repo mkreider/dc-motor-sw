@@ -3,7 +3,6 @@
 /*uint16_t adc []={400, 1278, 2890, 1554, 9876}; */
 	uint8_t t=0;
 	uint16_t k=1500;
-	uint16_t input[];
 
 void swap(uint16_t *a, uint16_t *b) 
 {
@@ -19,67 +18,94 @@ void swap(uint16_t *a, uint16_t *b)
 
 void median(const uint16_t* input)
 {
-	if(input[0] >= input[1])
+	uint16_t* pA = (uint16_t*)&input[0];
+	uint16_t* pB = (uint16_t*)&input[1];
+	uint16_t* pC = (uint16_t*)&input[2];
+	uint16_t* pD = (uint16_t*)&input[3];
+	uint16_t* pE = (uint16_t*)&input[4];
+	
+	if(*pA > *pB)
 	{
-		swap(&input[0], &input[1]);
+		swap(pA, pB);
 	}
 
 
-	if(input[2] >= input[3])
+	if(*pC > *pD)
 	{
-		swap(&input[2], &input[3]);
+		swap(pC, pD);
 	}
 
 
-	if(input[1] >= input[3])
+	if(*pB > *pD)
 	{
-		swap(&input[0], &input[2]);
-		swap(&input[1], &input[3]);
+		swap(pA, pC);
+		swap(pB, pD);
 	}
 
 
-	if(input[4] <= input[1])          //<
+	if(*pE <= *pB)    //<
 	{
-		if(input[4] <= input[0])
+		if (*pE <= *pA)
 		{
-			swap(&input[0], &input[4]);
-			swap(&input[4], &input[1]);
-			swap(&input[4], &input[3]);
+			swap(pA, pE);
+			
 		}
+		swap(pE, pB);
+		swap(pE, pD);
 	}	
-		else if(input[4] <= input[3])				//else if
-		{
-			swap(&input[4], &input[3]);
-		}
+	else if(*pE < *pD)				//else if
+	{
+		swap(pE, pD);
+	}
 	
 
 
-	if(input[2] <= input[1])
-	{
-		if(input[2] <= input[0])
+	if(*pC < *pB)
+	{	
+		if (*pC <= *pA)
 		{
-			swap(&input[0], &input[2]);
-			swap(&input[1], &input[2]);
+			swap(pA, pC);
+			
 		}
+		swap(pB, pC);			
 	}	
-		else if(input[2] >= input[3])
-		{
-			swap(&input[2], &input[3]);
-		}
-	
+	else if(*pC > *pD)				// >=
+	{
+		swap(pC, pD);
+	}
+		
 return;
 }		
 
  
- /*void new_bubblesort(const uint16_t* input, maxIndex)
+ uint16_t* new_bubblesort(const uint16_t* input, uint16_t len)
  {
-	 for (int x=0; x < maxIndex; x++)
-		for (int y=0; y < maxIndex-x; y++)
-			if (input[y] > input[y+1])
-			{
-				swap(&input[y], &input[y+1]);
-			}				
-			
-	return;
+	 uint16_t* sorted = (uint16_t*)input;
+	 
+	 
+	 for (uint16_t x=0; x < len; x++)
+	 {
+		for (uint16_t y=0; y < len-x; y++)
+			if (sorted[y] > sorted[y+1]) swap(&sorted[y], &sorted[y+1]);
+	}			
+	return sorted;
  }
- */
+ 
+  uint8_t sortCheck(const uint16_t* input, uint16_t len)
+ {
+	 uint16_t* sorted = (uint16_t*)input;
+	 uint16_t x,y;
+	 
+	 for ( x=0; x < len; x++)
+	 {
+		for (y=0; y < (len-x); y++)
+			if (sorted[y] > sorted[y+1])
+			{
+				return 1;
+				swap(&sorted[y], &sorted[y+1]);
+				
+			}				
+	}			
+	return 0;
+ }
+ 
