@@ -15,10 +15,10 @@
 
 
 
-uint16_t adc []= { 5, 40, 30, 20, 10};
+uint16_t adc []= { 9, 8, 7, 5, 6};
 // uint16_t adc_c[];
 // 	adc_c[]=adc[];
-uint16_t adc_c []={ 50, 40, 30, 20, 10};
+uint16_t adc_c []={ 9, 8, 7, 5, 6};
 uint8_t i;
 uint16_t adca[4];
 
@@ -39,7 +39,7 @@ void init(void)
 int main(void)
 {
 	init();
-	uint16_t adc[]={5, 4, 3, 2, 1};
+	//uint16_t adc[]={5, 4, 3, 2, 1};
 	
 		
     while(1)
@@ -49,9 +49,9 @@ int main(void)
 		uartputc('\n');
 		for(i=0;i<5;i++) {uartput_uint16(adc_c[i]); uartputc(' ');}
 			
-		//median(&adc[0]);
+		median(&adc[0]);
 		//bubblesort(*adc, 5);
-		new_bubblesort(&adc[0],);
+		//new_bubblesort();
 		
 		uartputc('\n');
 		for(i=0;i<5;i++) {uartput_uint16(adc[i]); uartputc(' ');}
