@@ -1,9 +1,5 @@
 #include <avr/io.h>
 
-/*uint16_t adc []={400, 1278, 2890, 1554, 9876}; */
-	uint8_t t=0;
-	uint16_t k=1500;
-
 void swap(uint16_t *a, uint16_t *b) 
 {
     uint16_t temp;
@@ -81,30 +77,23 @@ return;
  uint16_t* new_bubblesort(const uint16_t* input, uint16_t len)
  {
 	 uint16_t* sorted = (uint16_t*)input;
+	 uint16_t x,y;
 	 
-	 
-	 for (uint16_t x=0; x < len; x++)
+	  for ( x=0; x < (len-1); x++)
 	 {
-		for (uint16_t y=0; y < len-x; y++)
+		for (y=0; y < (len-x-1); y++)
 			if (sorted[y] > sorted[y+1]) swap(&sorted[y], &sorted[y+1]);
 	}			
 	return sorted;
  }
  
-  uint8_t sortCheck(const uint16_t* input, uint16_t len)
+  uint8_t sortCheck(const uint16_t* arrayA, const uint16_t* arrayB, uint16_t len)
  {
-	 uint16_t* sorted = (uint16_t*)input;
-	 uint16_t x,y;
+	 uint16_t i;
 	 
-	 for ( x=0; x < len; x++)
+	 for ( i=0; i < len; i++)
 	 {
-		for (y=0; y < (len-x); y++)
-			if (sorted[y] > sorted[y+1])
-			{
-				return 1;
-				swap(&sorted[y], &sorted[y+1]);
-				
-			}				
+		if(arrayA[i] != arrayB[i]) return 1;
 	}			
 	return 0;
  }
