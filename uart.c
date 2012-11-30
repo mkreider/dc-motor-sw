@@ -2,7 +2,7 @@
 
 void uartputs(const char* text)	//nicht veränderbar wegen char das * ist zum anzeigen das es ein pointer ist
 {
-	char *ptext;	// Kopie des orginals
+	char *ptext;	// Kopie des orginal / *=pointer einfacheres erkennen vor dem poingter ein p schreiben
 	ptext = text;
 	
 	while (*ptext != 0x00)				//soll aufhören wenn es 0x00 erreicht hat
