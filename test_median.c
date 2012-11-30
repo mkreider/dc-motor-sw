@@ -2,20 +2,20 @@
  * test_median.c
  *
  * Created: 13.11.2012 13:45:06
- *  Author: pburkhar
+ *
+ * Last edited on: 29.11.2012 Mathias Kreider
  */ 
+
 #include <avr/io.h>
 #include <util/delay.h>
+#include "adc.h"
+#include "median.h"
 #include "uart.h"
+#include <stdio.h>
 
-char text1[] = "Hallo Welt!";
-char text[]= "Nich schon wieder!";
 
-uint8_t counter = 0;
-//uint8_t adc []={1, 2, 3, 4, 5};   
-uint8_t adc[]={4, 3, 5, 2, 1};	
-/*uint8_t	adc[]={5, 6, 7};*/
-uint8_t x;
+
+
 
 void init(void)
 {
@@ -27,213 +27,76 @@ void init(void)
 	return;		
 }
 
-void swap(uint8_t *a, uint8_t *b) 
-{
-    uint8_t temp;
- 
-    temp = *a;
-    *a = *b;
-    *b = temp; 
-	
-	return; 
-}
 
-// void median(void)
-// {
-	
-	
-
-//### BUBBLESORT ###__________________________________________
-
-
- 
-void Bubble_Sort_Long(void)
-{
-/*	uint8_t timer = 0;*/
-/*	for(timer=0;timer<5;timer++)*/
-/*	{*/
-	if(adc[0]>adc[1]) swap(&adc[0], &adc[1]);
-	if(adc[1]>adc[2]) swap(&adc[1], &adc[2]);
-	if(adc[2]>adc[3]) swap(&adc[2], &adc[3]);
-	if(adc[3]>adc[4]) swap(&adc[3], &adc[4]);
-/*	if(adc[0]>adc[4]) swap(adc[4], adc[0]);*/
-/*	}*/
-	return;	
-}
-
-		
-	
-void median(void)		
-{
-//### NEUE SCHLEIFE (3 Zahlen) ###____________________________________
-
-	if(adc[0]<adc[1])
-	{	if(adc[0]<adc[2])
-		{	if(adc[1]<adc[2])
-			{	x = adc[1];				
-			}
-			else if(adc[1]>adc[2])
-			{	x = adc[2];				
-			}						
-		}				
-	}
-
-
-	if(adc[0]>adc[1])
-	{	if(adc[1]<adc[2])
-		{	if(adc[0]<adc[2])
-			{	x = adc[0];
-			}
-			else if(adc[0]>adc[2])
-			{	x = adc[2];				
-			}			
-		}			
-	}
-
-
-	if(adc[0]>adc[2])
-	{	if(adc[1]>adc[2])
-		{	if(adc[0]<adc[1])
-			{	x = adc[0];				
-			}			
-			else if(adc[0]>adc[1])
-			{	x = adc[1];			
-			}
-		}	
-		return;		
-	}
-	
-
-//### ALTE SCHLEIFE (3 ZAHLEN) ###_______________________________	
-	
-	
-// 	if(adc[0]<adc[1])
-// 	{	if(adc[1]<adc[2])
-// 		{	if(adc[0]<adc[2])
-// 			{	x = adc[1];
-// 			}			
-// 		}			
-// 	}
-// 	
-// 	
-// 	if(adc[0]<adc[1])
-// 	{	if(adc[1]>adc[2])
-// 		{	if(adc[0]<adc[2])
-// 			{	x = adc[2];
-// 			}			
-// 		}			
-// 	}
-// 	
-// 	
-// 	
-// 	if(adc[0]>adc[1])
-// 	{	if(adc[1]<adc[2])
-// 		{	if(adc[0]<adc[2])
-// 			{	x = adc[0];		
-// 			}			
-// 		}		
-// 	}
-// 	
-// 		
-// 		if(adc[0]>adc[1])
-// 	{	if(adc[1]<adc[2])
-// 		{	if(adc[0]>adc[2])
-// 			{	x = adc[2];
-// 			}			
-// 		}			
-// 	}
-// 		
-// 		
-// 		if(adc[0]<adc[1])
-// 	{	if(adc[1]>adc[2])
-// 		{	if(adc[0]>adc[2])
-// 			{	x = adc[0];
-// 			}			
-// 		}			
-// 	}
-// 	
-// 		
-// 	if(adc[0]>adc[1])
-// 	{	if(adc[1]>adc[2])
-// 		{	if(adc[0]>adc[2])
-// 			{	x = adc[1];
-// 			}			
-// 		}			
-// 	}
-
-//### ALTE SWAP-SCHLEIFE###___________________________
-/*
-if(adc[0] > adc[1])
-{
-	swap(adc[0], adc[1]);
-}
-
-if(adc[2] > adc[3])
-{
-	swap(adc[2], adc[3]);
-}
-
-if(adc[1] > adc[3])
-{
-	swap(adc[0], adc[2]);
-	swap(adc[1], adc[3]);
-}
-
-if(adc[4] < adc[1])
-{
-	if(adc[4] < adc[0])
-{
-	swap(adc[0], adc[4]);
-	swap(adc[4], adc[1]);
-	swap(adc[4], adc[3]);
-}
-	else if(adc[4] < adc [3])
-	{
-		swap(adc[3], adc[3]);
-}	}
-
-if(adc[2] < adc[1])
-{	if(adc[2] < adc[0])
-	{
-		swap(adc[0], adc[2]);
-		swap(adc[1], adc[2]);
-	}		
-	else if(adc[2] > adc[3])
-	{
-		swap(adc[2], adc[3]);
-	}
-}		
-*/
-		}
-
-
-
-
-
-
-
+#include "adc.h"
+#include "median.h"
 
 int main(void)
 {
-	init();
-	uint8_t i;
-/*	int t;*/
-/*	int temp;*/
-	uint8_t timer;
-    while(1)
-    {
-        _delay_ms(1000);
+	uint16_t testcnt=0;
+	uint16_t errorcnt=0;
 	
-		for(i=0;i<5;i++) uartputc(adc[i]);
-		 uartputc('\n');
-/*		median();*/	
-		for(timer=0;timer<5;timer++) Bubble_Sort_Long();
-		//Bubble_Sort_Long();
-		//swap(&adc[0], &adc[1]);
-		//uartputc(temp);
-		//uartputc(x);
-		uartputc(adc[2]);
-		uartputc('\n');
-		uartputc('\n');
-    }
+	uint16_t a,b,c,d,e;
+	uint8_t i;
+	uint16_t arrayA[5];
+	uint16_t arrayB[5];	
+	
+	init();
+	uartputs("Testausgabe");
+	
+	for(a=0;a<5;a++)
+			for(b=0;b<5;b++)
+				for(c=0;c<5;c++)
+					for(d=0;d<5;d++)
+						for(e=0;e<5;e++)
+						{
+							arrayA[0] = a;
+							arrayA[1] = b;
+							arrayA[2] = c;
+							arrayA[3] = d;
+							arrayA[4] = e;
+							
+							arrayB[0] = a;
+							arrayB[1] = b;
+							arrayB[2] = c;
+							arrayB[3] = d;
+							arrayB[4] = e;
+						
+		
+							median(&arrayA[0]);
+							new_bubblesort(&arrayB[0],5);
+							
+							if(sortCheck(&arrayA[0],&arrayB[0],5)) 
+							{
+								uartputs("Fehler\n");
+								for(i=0;i<5;i++) {uartput_uint16(arrayA[i]); uartputc(' ');}
+								uartputc('\n');
+								for(i=0;i<5;i++) {uartput_uint16(arrayB[i]); uartputc(' ');}
+								uartputc('\n');	
+							    errorcnt++;
+							}			
+							testcnt++;
+							
+						}
+	
+	uartputs("Test fertig, ");
+	uartput_uint16(errorcnt);
+	uartputs("Fehler, ");	
+	uartput_uint16(testcnt);
+	uartputs(" Faelle getestet.\n");					
+		
+    while(1)
+    {	
+		
+        
+		//TODO:: Please write your application code 
+
+	}    
+        
 }
+    
+
+
+
+
+
