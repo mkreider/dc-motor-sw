@@ -36,14 +36,18 @@ void init(void)
 
 int main(void)
 {
-
-				
+	init();
+	
+    uartputs("Hallo Welt\n");
+	uint8_t tmp;			
 		
     while(1)
     {	
 		
         
-		//TODO:: Please write your application code 
+		//TODO:: Please write your application code
+		uartputc(uart_getc());
+		
 
 	}    
         

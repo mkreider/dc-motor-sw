@@ -88,6 +88,19 @@ int main(void)
     while(1)
     {	
 		
+		check_v24();
+			
+// 		if((UCSR0A & (1<<RXEN0)))
+// 		{
+// 			uart_getc();
+// 			uartputs(UDR0); uartputc(' ');
+// 			uartputc('\n');
+// 		}
+// 		
+		//uart_getc();
+		//uartput_uint16(uart_getc);
+		//_delay_ms(500);
+		//uartputs("uart_getc()\n");
         
 		//TODO:: Please write your application code 
 
