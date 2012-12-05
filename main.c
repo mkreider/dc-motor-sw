@@ -37,18 +37,33 @@ void init(void)
 int main(void)
 {
 	init();
-	
-    uartputs("Hallo Welt\n");
+	uartputs("Hallo Welt\n");
 	uint8_t tmp;			
+	uint8_t cin;
 		
+	
     while(1)
     {	
 		
-        
 		//TODO:: Please write your application code
-		uartputc(uart_getc());
+		//uartputc(uart_getc());
 		
-
+		cin = uart_getc();
+		uartputc('\f');
+		
+		uartputs("Count ");
+		uartput_uint16(tmp++);
+		uartputs("\n\r"); 
+		
+		switch(cin)
+		{
+			case 'a': uartputs("Forward\n\r"); break;
+			case 'b': uartputs("Reverse\n\r"); break;
+			case 'c': uartputs("Stop\n\r"); break;
+			default: uartputs("Unknown\n\r");break;
+		}
+		
+		cin = 0x00;
 	}    
         
 }
