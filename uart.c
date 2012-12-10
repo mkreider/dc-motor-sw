@@ -55,4 +55,38 @@ void init_uart()
 	//UCSR0B			|=		(1<<RXEN0);
 }	
 
+	uint8_t tmp;			
+	uint8_t cin;
 
+
+void test_uartgetc(void)
+{
+		cin = uart_getc();
+		uartputc('\f');
+		
+		uartputs("Count ");
+		uartput_uint16(tmp++);
+		uartputs("\n\r"); 
+		
+		switch(cin)
+		{
+			case 'a': uartputs("Forward\n\r"); break;
+			case 'b': uartputs("Reverse\n\r"); break;
+			case 'c': uartputs("Stop\n\r"); break;
+			case 'd': uartputs("Overcurrent\n\r"); break;
+			case 'e': uartputs("Kann das ding Sondergedingens? ä ö ü $ öäü\n\r"); break;
+			case 'f': uartputs("Feierabend!\n\r"); break;
+			case 'g': uartputs("Work Work!\n\r"); break;
+			case 'h': uartputs("Ich bin blind, nicht taub!\n\r"); break;
+			case 'i': uartputs("Kling Glöckchen klingelingeling!\n\r"); break;
+			case 'j': uartputs("Fischers Fritz fischt frische Fische.\n\r"); break;
+			case 'k': uartputs("Dönertier. \n\r"); break;
+			case 'l': uartputs("Nonsense \n\r"); break;
+			case 'm': uartputs("STARCRAFT II FTW \n\r"); break;
+			case 'n': uartputs("Ich fahr heute alleine und DU bleibst länger hier :p ... da kommste heut ja kaum zum SC II zoggen *auslach* :> \n\r"); break;
+			default: uartputs("Unknown\n\r");break;
+		}
+		
+		cin = 0x00;
+		//return;
+}
