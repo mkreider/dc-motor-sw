@@ -10,6 +10,8 @@ void ADC_init (void)
 	ADCSRA |= (1<<ADEN);
 	
 	ADCSRA |= (1<<ADSC);
+	
+	
 	while (ADCSRA & (1<<ADSC)){}
 	wert	= ADCW;
 	
@@ -23,4 +25,4 @@ uint16_t ADC_Read (uint8_t channel)
 	while (ADCSRA & (1<<ADSC)){}
 		
 	return ADCW;	
-}
+}  

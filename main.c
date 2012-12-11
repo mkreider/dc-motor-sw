@@ -7,6 +7,7 @@
  */ 
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #include <util/delay.h>
 #include <stdio.h>
 #include "adc.h"
@@ -18,16 +19,15 @@
 
 void init(void)
 {	
-	//DDRA = 0b00000111;			//I/O's fuer die DC-Motorsteuerung
-	//DDRB = 0b11111111;			// Pull-Ups???
-	//DDRC = 0b00001110;
-	//DDRD = 0b00000011;		
-								
+	DDRA = 0b01110000;			//I/O's fuer die DC-Motorsteuerung
+	DDRB = 0b11011111;			// Pull-Ups???
+	DDRC = 0b00000000;
+	DDRD = 0b11000111;		
+							
 	
-	
-	DDRB = 0b01111111;				
-	DDRC  = 0x00;
-	PORTC &= ~(1<<PC0);
+// 	DDRB = 0b01111111;				
+// 	DDRC  = 0x00;
+// 	PORTC &= ~(1<<PC0);
 	init_uart();
 	
 	return;		
