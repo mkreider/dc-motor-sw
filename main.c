@@ -35,7 +35,7 @@
 						
 							//  Power-Up Timer im Init nötig?
 							//  Jedes Interrupt routinen mit Abfrage zu nFault beenden.
-							
+							// 	Fehlermeldung über RGB LED blinken realisieren				
 		
 		
 		
@@ -53,8 +53,11 @@ void init(void)
 	DDRB = 0b11011111;							// Pull-Ups???
 	DDRC = 0b00000000;
 	DDRD = 0b11000111;		
-						
 	
+	
+	PORTB |= (1<<PB5)					//* Sleep Mode
+												// setzen des Moter Treibers in den Sleep Modus						
+		
 	init_uart();						//* Rufe UART init auf
 	ADC_init ();						//* Rufe ADC init auf
 	
@@ -66,7 +69,7 @@ void init(void)
 	else
 	{
 	 error |= (1<<0);							
-	 }
+	}
 	
 	
 	return;		
@@ -100,10 +103,10 @@ int main(void)
 	{
 		// Remote Vorgang
 	} 
-	
-	
-		
-		
+	else
+	{
+		// local Vorgang
+	}			
 
 	}    
         

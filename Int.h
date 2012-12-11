@@ -1,5 +1,6 @@
-#ifndef Int_H_
-#define Int_H_
+#ifndef _int_H_
+#define _int_H_
+
 
 void Interrupt_init (void)
 
