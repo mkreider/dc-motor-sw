@@ -1,6 +1,6 @@
 #include <avr/io.h>
 
-void error_modul (void)
+void remote_modul (void)
 {
 	
 }

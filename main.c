@@ -29,15 +29,17 @@
 #include "error.h"
 
 		
-		
-		
+#define SleepDriver PB5	
+						
+						
 						//* Notizen:
 						
 							//  Power-Up Timer im Init nötig?
 							//  Jedes Interrupt routinen mit Abfrage zu nFault beenden.
 							// 	Fehlermeldung über RGB LED blinken realisieren				
-		
-		
+							//	"Motorerkennung" überarbeiten
+							//	Mit defines arbeiten --> siehe "SLeepTreiber"
+							//  "Richtung" (siehe Schaltplan) einpflegen
 		
 		
 		
@@ -46,7 +48,7 @@
 void init(void)			
 {			
 										//* Einfügen der benötigten Konstanten und Variablen
-	uint8_t error = 0x00;						// Error Register zur Fehlererkennung								
+	uint8_t error_reg = 0x00;					// Error Register zur Fehlererkennung								
 	
 	
 	DDRA = 0b01110000;					//* Inputs / Outputs		
@@ -55,21 +57,12 @@ void init(void)
 	DDRD = 0b11000111;		
 	
 	
-	PORTB |= (1<<PB5)					//* Sleep Mode
-												// setzen des Moter Treibers in den Sleep Modus						
+	PORTB |= (1<<SleepDriver)			//* Sleep Mode
+												// setzen des Motortreibers in den Sleep Modus						
 		
 	init_uart();						//* Rufe UART init auf
 	ADC_init ();						//* Rufe ADC init auf
-	
-	
-	if (PINC & (1<<PC7))				//* Motorerkennung //
-	{											// Wenn Motor vorhanden dann rufe Interrupt init auf	
-	Interrupt_init ();							// Wenn nicht dann setze Pin0 des Error Registers auf 1
-	}											
-	else
-	{
-	 error |= (1<<0);							
-	}
+	Interrupt_init ();					//* Rufe Interrupt init auf
 	
 	
 	return;		
@@ -89,23 +82,24 @@ int main(void)
 		
 	if (PC7 > 0)						//* nFault Prüfung						
 	{											// Wenn nFault Fehler meldet dann setze Pin1 des Error Registers auf 1 
-		error |= (1<<1)
+		error_reg |= (1<<1)
 	}
 		
 	
 	if (error >  0)						//* Fehlererkennung
 	{											// Wenn ein Fehler vorliegt dann rufe Error init auf
-		error_init ();							// Wenn nicht dann gehe weiter
+		error_modul ();							// Wenn nicht dann gehe weiter
+		// erstelllen bzw abändern
 	}
 		
 		
 	if (PA4 == 1)
 	{
-		// Remote Vorgang
+		remote_modul ():		
 	} 
 	else
 	{
-		// local Vorgang
+		// local Vorgang		
 	}			
 
 	}    
