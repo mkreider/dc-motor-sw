@@ -95,7 +95,7 @@ int main(void)
 		
 	if (PA4 == 1)
 	{
-		remote_modul ():		
+		remote_modul ();
 	} 
 	else
 	{
