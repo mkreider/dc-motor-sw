@@ -27,6 +27,7 @@
 #include "uart.h"
 #include "int.h"
 #include "error.h"
+#include "remote.h"
 
 		
 #define SleepDriver PB5	
@@ -87,16 +88,16 @@ int main(void)
 		
 	
 	if (error >  0)						//* Fehlererkennung
-	{											// Wenn ein Fehler vorliegt dann rufe Error init auf
+	{											// Wenn ein Fehler vorliegt dann rufe  das Error-Modul auf
 		error_modul ();							// Wenn nicht dann gehe weiter
 		// erstelllen bzw abändern
 	}
 		
 		
-	if (PA4 == 1)
-	{
-		remote_modul ();
-	} 
+	if (PA4 == 1)						//* Steuerwahl
+	{											// Wenn Umschalter auf High schaltet dann rufe das Remote-Modul auf
+		remote_modul ();						// Wenn nicht dann gehe weiter				
+	}										
 	else
 	{
 		// local Vorgang		
