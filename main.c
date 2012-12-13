@@ -29,9 +29,30 @@
 #include "error.h"
 #include "remote.h"
 
-		
-#define SleepDriver PB5	
-						
+//Makros/defines werden im allgemeinen komplett grossgeschrieben,
+//macht die unterscheidung von variablen einfacher. 
+
+//die koennen mehr als nur Pins einen Namen geben:
+
+//#define  SleepDriver PB5
+
+//Motor driver sleep
+#define PIN_DRV_SLEEP 	(1<<PB5)
+#define DRIVER_SLEEP 	PINB |=  PIN_DRV_SLEEP
+#define DRIVER_ARM   	PINB &= ~PIN_DRV_SLEEP	
+			
+//Error codes		
+#define ERR_0		0x01
+#define ERR_NFAULT      0x02
+#define ERR_2      	0x04
+#define ERR_3      	0x08
+#define ERR_4      	0x10
+#define ERR_5      	0x20
+#define ERR_6      	0x40
+#define ERR_7      	0x80
+
+
+	
 						
 						//* Notizen:
 						
