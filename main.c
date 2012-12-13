@@ -36,10 +36,22 @@
 
 //#define  SleepDriver PB5
 
+//Motor Driver nfault pin
+#define PIN_NFAULT   	PINC
+#define PORT_NFAULT  	PORTC
+#define DDR_NFAULT   	DDRC
+#define NFAULT       	(1<<PC7)
+
+#define GET_NFAULT   	PIN_NFAULT & NFAULT
+
 //Motor driver sleep
-#define PIN_DRV_SLEEP 	(1<<PB5)
-#define DRIVER_SLEEP 	PINB |=  PIN_DRV_SLEEP
-#define DRIVER_ARM   	PINB &= ~PIN_DRV_SLEEP	
+#define PIN_DRV_SLEEP	PINB
+#define PORT_DRV_SLEEP	PORTB
+#define DDR_DRV_SLEEP 	DDRB
+#define DRV_SLEEP 	(1<<PB5)
+
+#define SET_DRV_SLEEP 	PORT_DRV_SLEEP |=  DRV_SLEEP
+#define SET_DRV_ARM  	PORT_DRV_SLEEP &= ~DRV_SLEEP	
 			
 //Error codes		
 #define ERR_0		0x01
@@ -69,22 +81,21 @@
 		
 void init(void)			
 {			
-										//* Einfügen der benötigten Konstanten und Variablen
-	uint8_t error_reg = 0x00;					// Error Register zur Fehlererkennung								
+								//* Einfügen der benötigten Konstanten und Variablen
+	uint8_t error_reg = 0x00;				// Error Register zur Fehlererkennung								
 	
 	
 	DDRA = 0b01110000;					//* Inputs / Outputs		
-	DDRB = 0b11011111;							// Pull-Ups???
+	DDRB = 0b11011111;					// Pull-Ups???
 	DDRC = 0b00000000;
 	DDRD = 0b11000111;		
 	
 	
-	PORTB |= (1<<SleepDriver)			//* Sleep Mode
-												// setzen des Motortreibers in den Sleep Modus						
+	SET_DRV_SLEEP;						// setzen des Motortreibers in den Sleep Modus						
 		
 	init_uart();						//* Rufe UART init auf
 	ADC_init ();						//* Rufe ADC init auf
-	Interrupt_init ();					//* Rufe Interrupt init auf
+	Interrupt_init();					//* Rufe Interrupt init auf
 	
 	
 	return;		
@@ -95,36 +106,39 @@ void init(void)
 
 int main(void)
 {
-	init();								//* Rufe init auf
+	init();							//* Rufe init auf
 		
 
     while(1)
     {	
 		
 		
-	if (PC7 > 0)						//* nFault Prüfung						
-	{											// Wenn nFault Fehler meldet dann setze Pin1 des Error Registers auf 1 
-		error_reg |= (1<<1)
+	if (GET_NFAULT)						//* nFault Prüfung						
+	{							// Wenn nFault Fehler meldet dann setze Pin1 des Error Registers auf 1 
+		error_reg |= ERR_NFAULT;
 	}
 		
 	
-	if (error >  0)						//* Fehlererkennung
-	{											// Wenn ein Fehler vorliegt dann rufe  das Error-Modul auf
-		error_modul ();							// Wenn nicht dann gehe weiter
+	if (error !=  0)					//* Fehlererkennung
+	{							// Wenn ein Fehler vorliegt dann rufe  das Error-Modul auf
+		error_modul ();					// Wenn nicht dann gehe weiter
 		// erstelllen bzw abändern
 	}
 		
-		
+	
+
+	//funktioniert so nicht. Wenn dann if(PINA & (1<<PA4)) oder eben per Makro
+ 	
 	if (PA4 == 1)						//* Steuerwahl
-	{											// Wenn Umschalter auf High schaltet dann rufe das Remote-Modul auf
-		remote_modul ();						// Wenn nicht dann gehe weiter				
+	{							// Wenn Umschalter auf High schaltet dann rufe das Remote-Modul auf
+		remote_modul ();				// Wenn nicht dann gehe weiter				
 	}										
 	else
 	{
 		// local Vorgang		
 	}			
 
-	}    
+    }    
         
 	
 	
