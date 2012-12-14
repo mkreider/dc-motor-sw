@@ -22,6 +22,7 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include <stdio.h>
+#include "defines.h"
 #include "adc.h"
 #include "median.h"
 #include "uart.h"
@@ -29,39 +30,7 @@
 #include "error.h"
 #include "remote.h"
 
-//Makros/defines werden im allgemeinen komplett grossgeschrieben,
-//macht die unterscheidung von variablen einfacher. 
 
-//die koennen mehr als nur Pins einen Namen geben:
-
-//#define  SleepDriver PB5
-
-//Motor Driver nfault pin
-#define PIN_NFAULT   	PINC
-#define PORT_NFAULT  	PORTC
-#define DDR_NFAULT   	DDRC
-#define NFAULT       	(1<<PC7)
-
-#define GET_NFAULT   	PIN_NFAULT & NFAULT
-
-//Motor driver sleep
-#define PIN_DRV_SLEEP	PINB
-#define PORT_DRV_SLEEP	PORTB
-#define DDR_DRV_SLEEP 	DDRB
-#define DRV_SLEEP 	(1<<PB5)
-
-#define SET_DRV_SLEEP 	PORT_DRV_SLEEP |=  DRV_SLEEP
-#define SET_DRV_ARM  	PORT_DRV_SLEEP &= ~DRV_SLEEP	
-			
-//Error codes		
-#define ERR_0		0x01
-#define ERR_NFAULT      0x02
-#define ERR_2      	0x04
-#define ERR_3      	0x08
-#define ERR_4      	0x10
-#define ERR_5      	0x20
-#define ERR_6      	0x40
-#define ERR_7      	0x80
 
 
 	
@@ -84,11 +53,20 @@ void init(void)
 								//* Einfügen der benötigten Konstanten und Variablen
 	uint8_t error_reg = 0x00;				// Error Register zur Fehlererkennung								
 	
+	//TODO
+	//Abfrage des Watchdog flags - gab es einen Watchdog reset? wenn ja -> error
 	
-	DDRA = 0b01110000;					//* Inputs / Outputs		
-	DDRB = 0b11011111;					// Pull-Ups???
+	
+	
+	//* Inputs / Outputs	
+	DDR_ADC = U_FUSE_ADC | I_DRV_ADC | U_5V_ADC;						
+	DDRB = 0b11011111;					
 	DDRC = 0b00000000;
 	DDRD = 0b11000111;		
+	
+	// Pull-Ups???
+	PORT_ADC = 0;
+	PORTC = NFAULT;						
 	
 	
 	SET_DRV_SLEEP;						// setzen des Motortreibers in den Sleep Modus						
