@@ -20,14 +20,14 @@ void Interrupt_init (void)
 
 void WDT_init (void)
 {
-	WDTCR = (1<<WDE) | (1<<WDP2) | (1<<WDP1) (1<<WDP0);
+	WDTCR = (1<<WDE) | (1<<WDP2) | (1<<WDP1) | (1<<WDP0);
 	
 }
 
 
 void WDT_reset (void)
 {
-	WDTCR = (1<<WDTOE) 
+	WDTCR = (1<<WDTOE); 
 	WDTCR = (0<<WDE);
 	WDTCR = (1<<WDE) | (0<<WDTOE);
 	

@@ -1,5 +1,5 @@
-#ifndef _remote_H_
-#define _remote_H_
+#ifndef _REMOTE_H_
+#define _REMOTE_H_
 
 void remote_modul (void)
 

@@ -25,24 +25,26 @@
 #define SET_DRV_SLEEP 	PORT_DRV_SLEEP |=  DRV_SLEEP
 #define SET_DRV_ARM  	PORT_DRV_SLEEP &= ~DRV_SLEEP	
 		
-//ADC Pins
+//PORTA Pins
 #define PIN_ADC			PINA
-#define PORT_ADC		PORTA
-#define DDR_ADC			DDRA
 #define U_FUSE_ADC		(1<<PA7)
 #define I_DRV_ADC		(1<<PA6)
-#define	U_5V_ADC		(1<<PA5)
-		
+#define	U_24V_ADC		(1<<PA5)
+#define LOC_RMT			(1<<PA4)
+
+//* BRAKE
+//PORTB = (0<<PB7)|(1<<PB4);					// Motor-Treiber auf Brake 
+
 		
 			
-//Error codes		
-#define ERR_0		0x01
-#define ERR_NFAULT  0x02
-#define ERR_2      	0x04
-#define ERR_3      	0x08
-#define ERR_4      	0x10
-#define ERR_5      	0x20
-#define ERR_6      	0x40
-#define ERR_7      	0x80
-
+//*	Error codes								// LSB
+#define ERR_NFAULT		0x01				// BIT 1
+#define ERR_U_DRV_FUSE	0x02				// BIT 2
+#define ERR_I_DRV 		0x04				// BIT 3
+#define ERR_U_24V		0x08				// BIT 4
+#define ERR_LIMITS 		0x10				// BIT 5
+#define ERR_ORDER		0x20				// BIT 6
+#define ERR_6      		0x40				// BIT 7
+#define ERR_7      		0x80				// BIT 8
+											// MSB
 #endif

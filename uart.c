@@ -1,6 +1,11 @@
 #include <avr/io.h>
 #include "uart.h"
 
+
+// Kommentierung einfügen und pflegen sodass man es lesen kann >> DANKE!!
+// ändern für MEGA 32A
+
+
 void uartputs(const char* text)	//nicht veränderbar wegen char das * ist zum anzeigen das es ein pointer ist
 {
 	char *ptext;	// Kopie des orginals
