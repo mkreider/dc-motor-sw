@@ -47,4 +47,7 @@
 #define ERR_6      		0x40				// BIT 7
 #define ERR_7      		0x80				// BIT 8
 											// MSB
+											
+uint8_t error_reg;							// Error Register zur Fehlererkennung												
+											
 #endif

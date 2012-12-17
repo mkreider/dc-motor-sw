@@ -30,6 +30,7 @@
 #include "error.h"
 #include "remote.h"
 
+extern uint8_t error_reg;
 						
 						//* Notizen:
 							
@@ -56,7 +57,7 @@
 void init(void)			
 {			
 												//* Einfügen der benötigten Konstanten und Variablen
-	uint8_t error_reg = 0x00;							// Error Register zur Fehlererkennung								
+	error_reg = 0x00;								// Error Register zur Fehlererkennung							
 	
 												//* Inputs / Outputs	
 	DDRA = U_FUSE_ADC | I_DRV_ADC | U_24V_ADC | LOC_RMT;						
@@ -93,25 +94,25 @@ int main(void)
     {	
 	// WATCHDOG TEST 	
 		
-	if (GET_NFAULT)								//* nFault Prüfung						
-	{													
-		error_reg |= ERR_NFAULT;					// Wenn nFault Fehler meldet dann setze Pin1 des Error Registers auf 1 
-	}
+		if (GET_NFAULT)								//* nFault Prüfung						
+		{													
+			error_reg |= ERR_NFAULT;					// Wenn nFault Fehler meldet dann setze Pin1 des Error Registers auf 1 
+		}
 		
 	
-	if (error !=  0)							//* Fehlererkennung
-	{													// Wenn ein Fehler vorliegt dann rufe  das Error-Modul auf
-		error_modul ();									// Wenn nicht dann gehe weiter
-														// erstelllen bzw abändern
-	}
+		if (error_reg !=  0)							//* Fehlererkennung
+		{													// Wenn ein Fehler vorliegt dann rufe  das Error-Modul auf
+			error_modul ();									// Wenn nicht dann gehe weiter
+															// erstelllen bzw abändern
+		}
 		
 	
 
 	 	
-	 if(PINA & (1<<PA4))						//* Steuerwahl
-	{												// Wenn Umschalter auf High schaltet dann rufe das Remote-Modul auf
-		remote_modul ();							// Wenn nicht dann gehe weiter				
-	}										
+		 if(PINA & (1<<PA4))						//* Steuerwahl
+		{												// Wenn Umschalter auf High schaltet dann rufe das Remote-Modul auf
+			remote_modul ();							// Wenn nicht dann gehe weiter				
+		}										
 	
 	
 
