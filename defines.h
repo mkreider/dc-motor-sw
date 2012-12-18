@@ -44,10 +44,17 @@
 #define ERR_U_24V		0x08				// BIT 4
 #define ERR_LIMITS 		0x10				// BIT 5
 #define ERR_ORDER		0x20				// BIT 6
-#define ERR_6      		0x40				// BIT 7
+#define ERR_WATCHDOG	0x40				// BIT 7
 #define ERR_7      		0x80				// BIT 8
 											// MSB
-											
+//* Limit
+#define LIMIT_A			PD2
+#define LIMIT_B			PD3
+
+//* Buttons
+#define BUTTON_A		PC4
+#define BUTTON_B		PC5
+ 											
 uint8_t error_reg;							// Error Register zur Fehlererkennung												
-											
+uint8_t pRBstart;											
 #endif

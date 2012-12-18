@@ -31,6 +31,7 @@
 #include "remote.h"
 
 extern uint8_t error_reg;
+extern uint8_t pRBstart;
 						
 						//* Notizen:
 							
@@ -72,7 +73,11 @@ void init(void)
     //PORTC = NFAULT;							// Fehler setzen direkt beim Start--> nicht schlau!!
 		
 						
-	
+	if (WDRF ==1)								//* Watchdog Flag Prüfung
+		{
+			error_reg |= ERR_WATCHDOG;					// Wenn ein Watchdog Reset vorlag dann setze Pin 6 des Error Registers auf 1
+			MCUCSR = ~(1<<WDRF);						// Lösche das Flag wieder
+		}
 		
 	init_uart();								//* Rufe UART init auf
 	ADC_init ();								//* Rufe ADC init auf
@@ -88,11 +93,14 @@ void init(void)
 int main(void)
 {
 	init();										//* Rufe init auf
-	// Aktiv--> an UART (Ausgabe)(Selbstzerstörung Aktiviert)	
-
+	uartputc("PROGRAMM INITIALISIERT!!\n");
+	uartputc("...\n");
+	uartputc("...\n");
+	uartputc("...\n");
+	uartputc(" Ich bin Breit...\n");
+	
     while(1)
-    {	
-	// WATCHDOG TEST 	
+    {				 	
 		
 		if (GET_NFAULT)								//* nFault Prüfung						
 		{													
@@ -106,16 +114,59 @@ int main(void)
 															// erstelllen bzw abändern
 		}
 		
-	
-
 	 	
+		 median ();
+		  
+		 
 		 if(PINA & (1<<PA4))						//* Steuerwahl
 		{												// Wenn Umschalter auf High schaltet dann rufe das Remote-Modul auf
 			remote_modul ();							// Wenn nicht dann gehe weiter				
-		}										
-	
-	
-
+		}		
+		
+		
+		if (LIMIT_A & LIMIT_B == 1)					//* Endschalter abfrage
+		{												// Falls beide Endschalter gedrückt, dann führe Fehler verarbeitung aus.
+			error_reg |= ERR_LIMITS;
+			error_modul (); 
+		}
+		
+										
+		if (LIMIT_A == 0)
+		{
+			if (LIMIT_B == 0)							// Wenn nicht 0 --> LIMIT_B = 1, deswegen kann nur nach A gefahren werden.
+			{
+				if (BUTTON_A == 1)
+				{
+					// Fahre richtung A
+				}
+				
+				if (BUTTON_B == 1)
+				{
+					// Fahre richtung B
+				}
+			}
+			if (BUTTON_A == 1)
+				{
+					// Fahre richtung A
+				}
+			
+		}
+		
+				
+		
+		if (LIMIT_A == 1)
+		{
+			if (LIMIT_B == 0)
+			{
+				if (BUTTON_B == 1)
+				{
+					// Fahre richtung B
+				}
+				
+				
+			}			
+		}
+		
     }    
         
 		

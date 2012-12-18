@@ -75,7 +75,7 @@ void test_uartgetc(void)
 		
 		switch(cin)
 		{
-			case 'a': uartputs("Forward\n\r"); break;
+		  /*case 'a': uartputs("Forward\n\r"); break;
 			case 'b': uartputs("Reverse\n\r"); break;
 			case 'c': uartputs("Stop\n\r"); break;
 			case 'd': uartputs("Overcurrent\n\r"); break;
@@ -90,7 +90,7 @@ void test_uartgetc(void)
 			case 'm': uartputs("STARCRAFT II FTW \n\r"); break;
 			case 'n': uartputs("Ich fahr heute alleine und DU bleibst länger hier :p ... da kommste heut ja kaum zum SC II zoggen *auslach* :> \n\r"); break;
 			default: uartputs("Unknown\n\r");break;
-		}
+		*/}
 		
 		cin = 0x00;
 		//return;

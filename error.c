@@ -13,7 +13,7 @@ extern uint8_t error_reg;
 void error_modul (void)
 {
 	cli();																														// Global Interrupt Enable ausschalten
-	
+	WDT_reset();
 	stop();																														// Motor Stop mit Fast decay aufrufen 
 		
 	if (error_reg & ERR_NFAULT)																									// UART Ausgabe bei Fehler auf NFAULT
@@ -46,13 +46,18 @@ void error_modul (void)
 		uartputs("WRONG INPUT ORDER\n");
 	}
 	
+	if (error_reg & ERR_WATCHDOG)
+	{
+		uartputs("PROGRAMM TIMED OUT\n")
+	}
+	
 	uartputs("TRY TO RESTART\n IF THE ERROR STILL EXCIST CALL SOMEONE HOW KNOWS WHAT HE DOES OKEY? IDIOT !! ");					// Endtext Error-Modul
 	
 	while (error_reg !=0)																										//ERROR_LED
 	{
 		WDT_reset();																											// Watchdog reset
 		PORTD |= (1<<PD5);																										// Einschalten der Fehler LED			
-		_delay_ms(490);																											// 490ms Verzögerung 
+		_delay_ms(500);																											// 500ms Verzögerung 
 		PORTD &= ~(1<<PD5);																										// Ausschalten der Fehler LED
 	}
 	
