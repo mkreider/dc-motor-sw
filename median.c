@@ -75,13 +75,6 @@ uint16_t median(const uint16_t* input)
 }
 
 
-typedef struct 
-{
-	uint16_t  mem[5];
-	uint16_t* pInsPos;
-
-} ringbuffer;
-
 ringbuffer* rbInit(ringbuffer* rBuf)
 {
 	uint8_t i;	
@@ -92,7 +85,7 @@ ringbuffer* rbInit(ringbuffer* rBuf)
 }
 
 
-uint16_t* rbInsert(ringbuffer* rbuf, uint16_t newVal)
+uint16_t* rbInsert(ringbuffer* rBuf, uint16_t newVal)
 {
 	*rBuf->pInsPos = newVal;
 	if(rBuf->pInsPos - rBuf == 4) 	rBuf->pInsPos = rBuf;
