@@ -20,8 +20,8 @@ void uartputs(const char* text)	//nicht veränderbar wegen char das * ist zum anz
 
 void uartputc(char wort)				
 {
-	while(!((UCSR0A)&(1<<UDRE0)));
-	UDR0=wort;
+	while(!((UCSRA)&(1<<UDRE)));
+	UDR=wort;
 }
 
 void uartput_uint16(uint16_t zahl)
@@ -44,8 +44,8 @@ void uartput_uint16(uint16_t zahl)
 
 uint8_t uart_getc(void)
 {
-	while (!(UCSR0A & (1<<RXC0)));   // wait until chars are available		UCSRA und RXC !!
-    return UDR0;                   // give char from UDR to the caller
+	while (!(UCSRA & (1<<RXC)));   // wait until chars are available		UCSRA und RXC !!
+    return UDR;                   // give char from UDR to the caller
 }
 
 
@@ -53,9 +53,9 @@ uint8_t uart_getc(void)
 
 void init_uart()
 {
-	UCSR0B			=		(1<<RXEN0)  | (1<<TXEN0); //(1<<TXEN0); //(1<<RXEN0)  | (1<<TXEN0);		// RXEN und TXEN Enabled.
-	UCSR0C			=		(1<<UCSZ01) | (1<<UCSZ00);		// Asynchron, no parity, 1 stop bit, 8 bit size, no CK.	
-	UBRR0			=		0x08;							// Baud rate 57.6k
+	UCSRB			=		(1<<RXEN)  | (1<<TXEN); //(1<<TXEN0); //(1<<RXEN0)  | (1<<TXEN0);		// RXEN und TXEN Enabled.
+	UCSRC			=		(1<<URSEL) | (1<<UCSZ1) | (1<<UCSZ0);		// Asynchron, no parity, 1 stop bit, 8 bit size, no CK.	
+	UBRRL			=		0x08;							// Baud rate 57.6k
 	
 	//UCSR0B			|=		(1<<RXEN0);
 }	

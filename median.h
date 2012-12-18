@@ -1,6 +1,8 @@
 #ifndef _MEDIAN_H_
 #define _MEDIAN_H_
 
+#include "median.h"
+
 typedef struct
 {
         uint16_t  mem[5];
@@ -9,11 +11,11 @@ typedef struct
 } ringbuffer;
 
 
-void median(const uint16_t* input);
+uint16_t median(const uint16_t* input);
 void swap(uint16_t *a, uint16_t *b);
 
-uint16_t* rbInit(ringbuffer* rBuf);
-uint16_t* rbInsert(ringbuffer* rBuf, uint16_t newVal);
+ringbuffer* rbInit(ringbuffer* rBuf);
+ringbuffer* rbInsert(ringbuffer* rBuf, uint16_t newVal);
 
 
    

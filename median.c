@@ -1,4 +1,5 @@
 #include <avr/io.h>
+#include "median.h"
 
 void swap(uint16_t *a, uint16_t *b) 
 {

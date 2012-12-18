@@ -64,20 +64,38 @@ void init(void)
 												//* Einfügen der benötigten Konstanten und Variablen
 	error_reg = 0x00;								// Error Register zur Fehlererkennung							
 	
-												//* Inputs / Outputs	
-	DDRA = U_FUSE_ADC | I_DRV_ADC | U_24V_ADC | LOC_RMT;						
+	
+	//Output
+	DDR_DRV				|= DRV_EN | DRV_MODE | DRV_PASE | DRV_SLEEP;
+	DDR_SIGNAL_A_OUT	|= SIGNAL_A_OUT;
+	DDR_SIGNAL_B_OUT	|= SIGNAL_B_OUT;
+	DDR_LIMIT_A_OUT		|= LIMIT_A_OUT;
+	DDR_LIMIT_B_OUT		|= LIMIT_B_OUT;
+														
+	//Pullups
+	PORT_LOC_RMT		|= LOC_RMT; 
+	PORT_NFAULT			|= NFAULT;
+	PORT_LIMIT_A		|= LIMIT_A;
+	PORT_LIMIT_B		|= LIMIT_B;
+	PORT_JMP_MOT_TYPE	|= JMP_MOT_TYPE;
+	PORT_JMP_MOT_DIR	|= JMP_MOT_DIR;
+	
+	
+	
+	
+	
 	DDRB = 0b11011111;					
 	DDRC = 0b00000000;
 	DDRD = 0b11000111;
 			
-	
+	MOTOR_BREAK;
 	SET_DRV_SLEEP;								// setzen des Motortreibers in den Sleep Modus												// Pull-Ups???
-	PORTA = 0;					
-	PORTB = (0<<PB7)|(1<<PB4);					// Motor-Treiber auf Brake 
-    //PORTC = NFAULT;							// Fehler setzen direkt beim Start--> nicht schlau!!
+					
+	
+    
 		
 						
-	if (WDRF ==1)								//* Watchdog Flag Prüfung
+	if (WDRF == 1)								//* Watchdog Flag Prüfung
 		{
 			error_reg |= ERR_WATCHDOG;					// Wenn ein Watchdog Reset vorlag dann setze Pin 6 des Error Registers auf 1
 			MCUCSR = ~(1<<WDRF);						// Lösche das Flag wieder
@@ -86,13 +104,13 @@ void init(void)
 	init_uart();								//* Rufe UART init auf
 	ADC_init ();								//* Rufe ADC init auf
 	
-	rbInit(rbUFuse);							//Init ringbuffers for median
-	rbInit(rbU24);
-	rbInit(rbIDrv);
+	rbInit(&rbUFuse);							//Init ringbuffers for median
+	rbInit(&rbU24);
+	rbInit(&rbIDrv);
 	
 									
-	Interrupt_init();							//* Rufe Interrupt init auf
-	WDT_init ();								//* Rufe Watchdog Init auf
+	//Interrupt_init();							//* Rufe Interrupt init auf
+	//WDT_init ();								//* Rufe Watchdog Init auf
 	
 	
 	
@@ -105,19 +123,19 @@ void init(void)
 int main(void)
 {
 	init();										//* Rufe init auf
-	uartputc("PROGRAMM INITIALISIERT!!\n");
-	uartputc("...\n");
-	uartputc("...\n");
-	uartputc("...\n");
-	uartputc(" Ich bin Breit...\n");
 	
+	uartputs("PROGRAMM INITIALISIERT!!\n");
+	uartputs("...\n");
+	uartputs("...\n");
+	uartputs("...\n");
+	uartputs(" Ich bin Breit...\n");
 	
 	
 	
 	
 	//rbInsert(rbIDrv, ADC_Read(0));
 	
-	//uint16_t medDrv = median(rbIDrv->mem);
+	
 	
     while(1)
     {				 	
@@ -134,62 +152,65 @@ int main(void)
 															// erstelllen bzw abändern
 		}
 		
-	 	
-		 median ();
-		  
-		 
+	 /*
+		 uint16_t medDrv = median(&rbIDrv->mem);
+		 uint16_t medDrv = median(&rbU24->mem);
+		 uint16_t medDrv = median(rbUFuse->mem);
+	*/	
 		 if(PINA & (1<<PA4))						//* Steuerwahl
 		{												// Wenn Umschalter auf High schaltet dann rufe das Remote-Modul auf
 			remote_modul ();							// Wenn nicht dann gehe weiter				
 		}		
 		
 		
-		if (LIMIT_A & LIMIT_B == 1)					//* Endschalter abfrage
+		if (GET_LIMIT_A && GET_LIMIT_B)					//* Endschalter abfrage
 		{												// Falls beide Endschalter gedrückt, dann führe Fehler verarbeitung aus.
 			error_reg |= ERR_LIMITS;
 			error_modul (); 
 		}
 		
 										
-		if (LIMIT_A == 0)
+		if (!(GET_LIMIT_A))
 		{
-			if (LIMIT_B == 0)							// Wenn nicht 0 --> LIMIT_B = 1, deswegen kann nur nach A gefahren werden.
+			if (!(GET_LIMIT_B))							// Wenn nicht 0 --> LIMIT_B = 1, deswegen kann nur nach A gefahren werden.
 			{
-				if (BUTTON_A == 1)
+				if (GET_BUTTON_A)
 				{
 					// Fahre richtung A
+					uartputs("Fahre Richtung A\r\n");
 				}
 				
-				if (BUTTON_B == 1)
+				if (GET_BUTTON_B)
 				{
 					// Fahre richtung B
+					uartputs("Fahre Richtung B\r\n");	
 				}
 			}
-			if (BUTTON_A == 1)
+			if (GET_BUTTON_A)
 				{
 					// Fahre richtung A
+					uartputs("Fahre Richtung A\r\n");
 				}
 			
 		}
 		
 				
 		
-		if (LIMIT_A == 1)
+		if (GET_LIMIT_A && !(GET_LIMIT_B))
 		{
-			if (LIMIT_B == 0)
-			{
 				if (BUTTON_B == 1)
 				{
 					// Fahre richtung B
+					uartputs("Fahre Richtung B\r\n");	
 				}
 				
 				
-			}			
+						
 		}
 		
     }    
         
-		
+	
 		
 }
     

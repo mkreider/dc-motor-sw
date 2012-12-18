@@ -48,7 +48,7 @@ void error_modul (void)
 	
 	if (error_reg & ERR_WATCHDOG)
 	{
-		uartputs("PROGRAMM TIMED OUT\n")
+		uartputs("PROGRAMM TIMED OUT\n");
 	}
 	
 	uartputs("TRY TO RESTART\n IF THE ERROR STILL EXCIST CALL SOMEONE HOW KNOWS WHAT HE DOES OKEY? IDIOT !! ");					// Endtext Error-Modul
