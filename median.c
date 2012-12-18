@@ -77,21 +77,21 @@ uint16_t median(const uint16_t* input)
 
 ringbuffer* rbInit(ringbuffer* rBuf)
 {
-	uint8_t i;	
-	for(i=0; i<5; i++) rBuf->mem[i] = 0;
-	pInsPos = &rBuf->mem[0];
-	
-	return rBuf;		
+        uint8_t i;
+        for(i=0; i<5; i++) rBuf->mem[i] = 0;
+        rBuf->pInsPos = &rBuf->mem[0];
+
+        return rBuf;
 }
 
 
-uint16_t* rbInsert(ringbuffer* rBuf, uint16_t newVal)
+ringbuffer* rbInsert(ringbuffer* rBuf, uint16_t newVal)
 {
-	*rBuf->pInsPos = newVal;
-	if(rBuf->pInsPos - rBuf == 4) 	rBuf->pInsPos = rBuf;
-	else 				rBuf->pInsPos++;
-	
-	return rbuf;
+        *rBuf->pInsPos = newVal;
+        if(rBuf->pInsPos - &rBuf->mem[0] == 4)  rBuf->pInsPos = &rBuf->mem[0];
+        else                            	rBuf->pInsPos++;
+
+        return rBuf;
 }
 		
 
