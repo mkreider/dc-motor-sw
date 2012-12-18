@@ -12,7 +12,7 @@ void swap(uint16_t *a, uint16_t *b)
 }
 
 
-void median(const uint16_t* input)
+uint16_t median(const uint16_t* input)
 {
 	uint16_t* pA = (uint16_t*)&input[0];
 	uint16_t* pB = (uint16_t*)&input[1];
@@ -39,7 +39,7 @@ void median(const uint16_t* input)
 	}
 
 
-	if(*pE <= *pB)    //<
+	if(*pE <= *pB)    
 	{
 		if (*pE <= *pA)
 		{
@@ -49,7 +49,7 @@ void median(const uint16_t* input)
 		swap(pE, pB);
 		swap(pE, pD);
 	}	
-	else if(*pE < *pD)				//else if
+	else if(*pE < *pD)				
 	{
 		swap(pE, pD);
 	}
@@ -65,13 +65,35 @@ void median(const uint16_t* input)
 		}
 		swap(pB, pC);			
 	}	
-	else if(*pC > *pD)				// >=
+	else if(*pC > *pD)			
 	{
 		swap(pC, pD);
 	}
+	
+	//return middle value of 5	
+	return *pC;
+}
+
+
+ringbuffer* rbInit(ringbuffer* rBuf)
+{
+        uint8_t i;
+        for(i=0; i<5; i++) rBuf->mem[i] = 0;
+        rBuf->pInsPos = &rBuf->mem[0];
+
+        return rBuf;
+}
+
+
+ringbuffer* rbInsert(ringbuffer* rBuf, uint16_t newVal)
+{
+        *rBuf->pInsPos = newVal;
+        if(rBuf->pInsPos - &rBuf->mem[0] == 4)  rBuf->pInsPos = &rBuf->mem[0];
+        else                            	rBuf->pInsPos++;
+
+        return rBuf;
+}
 		
-return;
-}		
 
  
 //  uint16_t* new_bubblesort(const uint16_t* input, uint16_t len)
