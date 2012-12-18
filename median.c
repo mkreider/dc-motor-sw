@@ -89,7 +89,7 @@ ringbuffer* rbInsert(ringbuffer* rBuf, uint16_t newVal)
 {
         *rBuf->pInsPos = newVal;
         if(rBuf->pInsPos - &rBuf->mem[0] == 4)  rBuf->pInsPos = &rBuf->mem[0];
-        else                            	rBuf->pInsPos++;
+        else                            		rBuf->pInsPos++;
 
         return rBuf;
 }

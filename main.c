@@ -30,6 +30,10 @@
 #include "error.h"
 #include "remote.h"
 
+ringbuffer rbUFuse;
+ringbuffer rbU24;
+ringbuffer rbIDrv;
+
 extern uint8_t error_reg;
 extern uint8_t pRBstart;
 						
@@ -81,9 +85,17 @@ void init(void)
 		
 	init_uart();								//* Rufe UART init auf
 	ADC_init ();								//* Rufe ADC init auf
+	
+	rbInit(rbUFuse);							//Init ringbuffers for median
+	rbInit(rbU24);
+	rbInit(rbIDrv);
+	
+									
 	Interrupt_init();							//* Rufe Interrupt init auf
 	WDT_init ();								//* Rufe Watchdog Init auf
-		
+	
+	
+	
 	return;		
 }
 
@@ -98,6 +110,14 @@ int main(void)
 	uartputc("...\n");
 	uartputc("...\n");
 	uartputc(" Ich bin Breit...\n");
+	
+	
+	
+	
+	
+	//rbInsert(rbIDrv, ADC_Read(0));
+	
+	//uint16_t medDrv = median(rbIDrv->mem);
 	
     while(1)
     {				 	
