@@ -14,7 +14,7 @@ void error_modul (void)
 {
 	cli();																														// Global Interrupt Enable ausschalten
 	WDT_reset();
-	stop();																														// Motor Stop mit Fast decay aufrufen 
+	Motor_stop();																														// Motor Stop mit Fast decay aufrufen 
 		
 	if (error_reg & ERR_NFAULT)																									// UART Ausgabe bei Fehler auf NFAULT
 	{
@@ -51,7 +51,7 @@ void error_modul (void)
 		uartputs("PROGRAMM TIMED OUT\n");
 	}
 	
-	uartputs("TRY TO RESTART\n IF THE ERROR STILL EXCIST CALL SOMEONE HOW KNOWS WHAT HE DOES OKEY? IDIOT !! ");					// Endtext Error-Modul
+	uartputs("TRY TO RESTART\n IF THE ERROR STILL EXCIST CALL SOMEONE HOW KNOWS WHAT HE DOES!! ");					// Endtext Error-Modul
 	
 	while (error_reg !=0)																										//ERROR_LED
 	{

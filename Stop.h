@@ -9,7 +9,7 @@
 #ifndef STOP_H_
 #define STOP_H_
 
-void stop(void);
+void Motor_stop(void);
 
 
 
