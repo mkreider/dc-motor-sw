@@ -128,12 +128,12 @@ int main(void)
 	uartputs("...\n");
 	uartputs("...\n");
 	uartputs("...\n");
-	uartputs(" Ich bin Breit...\n");
+	uartputs("Bereit...\n");
 	
 	
 	
 	
-	//rbInsert(rbIDrv, ADC_Read(0));
+	//rbInsert(rbIDrv, ADC_Read(0));				<<<--- kommt in die Interrupt
 	
 	
 	
@@ -157,6 +157,8 @@ int main(void)
 		 uint16_t medDrv = median(&rbU24->mem);
 		 uint16_t medDrv = median(rbUFuse->mem);
 	*/	
+		 
+		 
 		 if(PINA & (1<<PA4))						//* Steuerwahl
 		{												// Wenn Umschalter auf High schaltet dann rufe das Remote-Modul auf
 			remote_modul ();							// Wenn nicht dann gehe weiter				
