@@ -1,10 +1,48 @@
 #ifndef _DEFINES_H_
 #define _DEFINES_H_
 
+#include "median.h"
 
-uint8_t error_reg;				//	Error Register for fault detection 											
-uint8_t pRBstart;				//  Pointer Ring buffer start
+#define PRINT 1
+#define DEBUG 
 
+//Print debug messages depending on DEBUG 1 / 0
+#ifdef PRINT
+# define UPRINT(x) uartputs(x)
+#else
+# define UPRINT(x) do {} while (0)
+#endif 
+
+#ifdef PRINT
+# define UPRINTN(x) uartput_uint16(x)
+#else
+# define UPRINTN(x) do {} while (0)
+#endif 
+
+
+//Print debug messages depending on DEBUG 1 / 0
+#ifdef DEBUG
+# define DBPRINT(x) uartputs(x)
+#else
+# define DBPRINT(x) do {} while (0)
+#endif 
+
+#ifdef DEBUG
+# define DBPRINTN(x) uartput_uint16(x)
+#else
+# define DBPRINTN(x) do {} while (0)
+#endif 
+
+
+volatile uint8_t error_reg;				//	Error Register for fault detection 											
+
+
+volatile ringbuffer rbUFuse;
+volatile ringbuffer rbU24;
+volatile ringbuffer rbIDrv;
+volatile ringbuffer* pRbUFuse;
+volatile ringbuffer* pRbU24;  
+volatile ringbuffer* pRbIDrv; 
 
 //*******************>>> INPUTS <<< *******************
 
@@ -31,6 +69,10 @@ uint8_t pRBstart;				//  Pointer Ring buffer start
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#define LIMIT_A_IRQ			INT0_vect	
+#define LIMIT_B_IRQ			INT1_vect
+#define STOPP				INT2_vect 
 
 //* LIMIT A INPUT
 #define PIN_LIMIT_A			PIND
@@ -76,6 +118,10 @@ uint8_t pRBstart;				//  Pointer Ring buffer start
 #define GET_U_FUSE_ADC	PIN_ADC	& U_FUSE_ADC
 #define GET_I_DRV_ADC	PIN_ADC	& I_DRV_ADC
 #define GET_U_24V_ADC	PIN_ADC & U_24V_ADC
+
+#define I_DRV_ADC_CH	6
+#define U_FUSE_ADC_CH	7
+#define U_24V_ADC_CH		5
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -147,11 +193,20 @@ uint8_t pRBstart;				//  Pointer Ring buffer start
 #define DRV_PHASE 		(1<<PB6)
 #define DRV_MODE 		(1<<PB4)
 #define MOTOR_BREAK		PORT_DRV = (PORT_DRV & ~DRV_EN) | DRV_MODE
-#define SET_DRV_SLEEP 	PORT_DRV |=  DRV_SLEEP
-#define SET_DRV_ARM  	PORT_DRV &= ~DRV_SLEEP
+#define SET_DRV_ARM  	PORT_DRV |=  DRV_SLEEP
+#define SET_DRV_SLEEP 	PORT_DRV &= ~DRV_SLEEP
+#define SET_GO_A  		PORT_DRV = (PORT_DRV & ~(DRV_MODE)) | (DRV_EN | DRV_PHASE)   
+#define SET_GO_B  		PORT_DRV = (PORT_DRV & ~(DRV_PHASE|DRV_MODE)) | DRV_EN
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#define DDR_REMOTE_SWITCH	DDRA
+#define PIN_REMOTE_SWITCH	PINA
+#define PORT_REMOTE_SWITCH	PORTA
+#define REMOTE_SWITCH		(1<<PA4)
+
+#define GET_REMOTE_SWITCH	PIN_REMOTE_SWITCH & REMOTE_SWITCH
+
 
 //* SIGNAL A OUTPUT
 #define DDR_SIGNAL_A_OUT   DDRA

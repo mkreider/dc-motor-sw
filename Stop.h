@@ -10,6 +10,8 @@
 #define STOP_H_
 
 void Motor_stop(void);
+void Motor_FW(void);
+void Motor_RE(void);
 
 
 #endif 

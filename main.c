@@ -30,12 +30,11 @@
 #include "error.h"
 #include "remote.h"
 
-ringbuffer rbUFuse;
-ringbuffer rbU24;
-ringbuffer rbIDrv;
+uint16_t medIDrv;
+uint16_t medU24;
+uint16_t medUFuse;
+volatile uint8_t lastLimit;
 
-extern uint8_t error_reg;
-extern uint8_t pRBstart;
 						
 						//* Notizen:
 							
@@ -88,12 +87,16 @@ void init(void)
 	init_uart();								//* Rufe UART init auf
 	ADC_init ();								//* Rufe ADC init auf
 	
-	rbInit(&rbUFuse);							//* Init ringbuffers for median
-	rbInit(&rbU24);
-	rbInit(&rbIDrv);
-									
+	pRbUFuse= &rbUFuse;
+	pRbU24	= &rbU24;
+	pRbIDrv = &rbIDrv;
+	
+	rbInit(pRbUFuse);							//* Init ringbuffers for median
+	rbInit(pRbU24);
+	rbInit(pRbIDrv);
+								
 	Interrupt_init();							//* Rufe Interrupt init auf
-	WDT_init ();								//* Rufe Watchdog Init auf
+	//WDT_init ();								//* Rufe Watchdog Init auf
 	
 	
 	
@@ -107,21 +110,25 @@ int main(void)
 {
 	init();										//* Rufe init auf
 	
-	uartputs("PROGRAMM INITIALISIERT!!\n");
-	uartputs("...\n");
-	uartputs("...\n");
-	uartputs("...\n");
-	uartputs("Bereit...\n");
+	uint8_t Go_A;
+	uint8_t Go_B;
+	
+	DBPRINT("PROGRAMM INITIALISIERT!!\n");
+	DBPRINT("...\n");
+	DBPRINT("...\n");
+	DBPRINT("...\n");
+	DBPRINT("Bereit...\n");
 	
 	
 	
 	
-	//rbInsert(rbIDrv, ADC_Read(0));				<<<--- kommt in die Interrupt
+	
 	
 	
 	
     while(1)
     {				 	
+		UPRINT("\f");
 		
 		if (GET_NFAULT)									//* nFault Prüfung						
 		{													
@@ -135,11 +142,9 @@ int main(void)
 															// erstelllen bzw abändern
 		}
 		
-	 /*
-		 uint16_t medDrv = median(&rbIDrv->mem);
-		 uint16_t medDrv = median(&rbU24->mem);
-		 uint16_t medDrv = median(rbUFuse->mem);
-	*/	
+	     
+		
+		
 		 
 		 
 		 if(PINA & (1<<PA4))						//* Steuerwahl
@@ -147,52 +152,90 @@ int main(void)
 			remote_modul ();							// Wenn nicht dann gehe weiter				
 		}		
 		
-		
+		//Local or remote control
+		if(GET_REMOTE_SWITCH)
+		{
+			DBPRINT("Modus: Remote\r\n");
+			Go_A = GET_REMOTE_A;
+			Go_B = GET_REMOTE_B;
+		}			
+		else
+		{
+			DBPRINT("Modus: Local\r\n");
+			Go_A = GET_BUTTON_A;
+			Go_B = GET_BUTTON_B;
+				
+		}
+			
+		DBPRINTN(Go_A);
+		DBPRINT(" GoA\r\n");
+		DBPRINTN(Go_B);
+		DBPRINT(" GoB\r\n");
+		DBPRINTN(lastLimit);
+		DBPRINT(" Lastlimit\r\n");
+	
+			
 		if (GET_LIMIT_A && GET_LIMIT_B)					//* Endschalter abfrage
 		{												// Falls beide Endschalter gedrückt, dann führe Fehler verarbeitung aus.
 			error_reg |= ERR_LIMITS;
 			error_modul (); 
 		}
 		
-										
-		if (!(GET_LIMIT_A))
-		{
-			if (!(GET_LIMIT_B))							// Wenn nicht 0 --> LIMIT_B = 1, deswegen kann nur nach A gefahren werden.
-			{
-				if (GET_BUTTON_A)
-				{
-					// Fahre richtung A
-					uartputs("Fahre Richtung A\r\n");
-				}
-				
-				if (GET_BUTTON_B)
-				{
-					// Fahre richtung B
-					uartputs("Fahre Richtung B\r\n");	
-				}
-			}
-			if (GET_BUTTON_A)
-				{
-					// Fahre richtung A
-					uartputs("Fahre Richtung A\r\n");
-				}
-			
-		}
-		
-				
 		
 		if (GET_LIMIT_A && !(GET_LIMIT_B))
 		{
-				if (BUTTON_B == 1)
+				DBPRINT("LA=1 LB=0\r\n");	
+				if (Go_B)
 				{
 					// Fahre richtung B
-					uartputs("Fahre Richtung B\r\n");	
+					Motor_RE();
+					UPRINT("Fahre Richtung B\r\n");	
 				}
-				
-				
-						
 		}
 		
+		if (!(GET_LIMIT_A) && GET_LIMIT_B)
+		{
+				DBPRINT("LA=0 LB=1\r\n");
+				if (Go_A)
+				{
+					// Fahre richtung A
+					Motor_FW();
+					UPRINT("Fahre Richtung A\r\n");	
+				}
+		}
+		
+		if (!(GET_LIMIT_A) && !(GET_LIMIT_B))
+		{
+				DBPRINT("LA=0 LB=0\r\n");
+				if (Go_A)
+				{
+					// Fahre richtung A
+					Motor_FW();
+					UPRINT("Fahre Richtung A\r\n");
+				}
+				else if (Go_B)
+				{
+					// Fahre richtung B
+					Motor_RE();
+					UPRINT("Fahre Richtung B\r\n");
+					
+	
+				}
+		}
+		
+		
+		DBPRINT("Median output:\r\n");
+		 medIDrv	= median(&pRbIDrv->mem[0]);
+		 medU24		= median(&pRbU24->mem[0]);
+		 medUFuse	= median(&pRbUFuse->mem[0]);
+		 DBPRINTN(medIDrv);
+		 DBPRINT(" medIDrv \r\n");
+		 DBPRINTN(medU24);
+		 DBPRINT(" medU24 \r\n");
+		 DBPRINTN(medUFuse);
+		 DBPRINT(" medUFuse \r\n");
+		
+		_delay_ms(500);
     }    
         
 	
