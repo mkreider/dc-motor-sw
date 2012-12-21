@@ -10,7 +10,7 @@
 
 void Motor_stop (void)
 {
-	SET_DRV_SLEEP;								// setzen des Motortreibers in den Sleep Modus
-	MOTOR_BREAK;								// Motor-Treiber auf Brake --> Um fast decay bei DRV8800 zu verwenden, muss Sleep Aktiviert sein.	
+	SET_DRV_SLEEP;								// set the Driver into sleep mode
+	MOTOR_BREAK;								// Motor Driver on break --> Sleep have to be activated for fast decay mode	
 	return;
 }

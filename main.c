@@ -61,7 +61,7 @@ extern uint8_t pRBstart;
 		
 void init(void)			
 {			
-												//* Einfügen der benötigten Konstanten und Variablen
+													//* Einfügen der benötigten Konstanten und Variablen
 	error_reg = 0x00;								// Error Register zur Fehlererkennung							
 	
 	
@@ -75,45 +75,25 @@ void init(void)
 	DDR_DIR_B_LED		|= DIR_B_LED;
 	DDR_ERR_LED			|= DIR_ERR_LED;
 														
-	//Pullups
-	PORT_LOC_RMT		|= LOC_RMT; 
-	PORT_NFAULT			|= NFAULT;
-	PORT_LIMIT_A		|= LIMIT_A;
-	PORT_LIMIT_B		|= LIMIT_B;
-	PORT_JMP_MOT_TYPE	|= JMP_MOT_TYPE;
-	PORT_JMP_MOT_DIR	|= JMP_MOT_DIR;
-	
-	
-	
-	
-	
-	DDRB = 0b11011111;					
-	DDRC = 0b00000000;
-	DDRD = 0b11000111;
-			
-	MOTOR_BREAK;
-	SET_DRV_SLEEP;								// setzen des Motortreibers in den Sleep Modus												// Pull-Ups???
+	MOTOR_BREAK;								//* Motor auf Bremse 
+	SET_DRV_SLEEP;								//* setzen des Motortreibers in den Sleep Modus												// Pull-Ups???
 					
-	
-    
-		
-						
+							
 	if (WDRF == 1)								//* Watchdog Flag Prüfung
 		{
-			error_reg |= ERR_WATCHDOG;					// Wenn ein Watchdog Reset vorlag dann setze Pin 6 des Error Registers auf 1
-			MCUCSR = ~(1<<WDRF);						// Lösche das Flag wieder
+			error_reg |= ERR_WATCHDOG;			// Wenn ein Watchdog Reset vorlag dann setze Pin 6 des Error Registers auf 1
+			MCUCSR = ~(1<<WDRF);				// Lösche das Flag wieder
 		}
 		
 	init_uart();								//* Rufe UART init auf
 	ADC_init ();								//* Rufe ADC init auf
 	
-	rbInit(&rbUFuse);							//Init ringbuffers for median
+	rbInit(&rbUFuse);							//* Init ringbuffers for median
 	rbInit(&rbU24);
 	rbInit(&rbIDrv);
-	
 									
-	//Interrupt_init();							//* Rufe Interrupt init auf
-	//WDT_init ();								//* Rufe Watchdog Init auf
+	Interrupt_init();							//* Rufe Interrupt init auf
+	WDT_init ();								//* Rufe Watchdog Init auf
 	
 	
 	
@@ -143,13 +123,13 @@ int main(void)
     while(1)
     {				 	
 		
-		if (GET_NFAULT)								//* nFault Prüfung						
+		if (GET_NFAULT)									//* nFault Prüfung						
 		{													
 			error_reg |= ERR_NFAULT;					// Wenn nFault Fehler meldet dann setze Pin1 des Error Registers auf 1 
 		}
 		
 	
-		if (error_reg !=  0)							//* Fehlererkennung
+		if (error_reg != 0)									//* Fehlererkennung
 		{													// Wenn ein Fehler vorliegt dann rufe  das Error-Modul auf
 			error_modul ();									// Wenn nicht dann gehe weiter
 															// erstelllen bzw abändern
@@ -218,20 +198,3 @@ int main(void)
 	
 		
 }
-    
-
-
-
-
-
-
-// 
-// // char text() = "Achtung Ueberstrom";
-// 
-// void output (const char* text())				//nicht veränderbar wegen char das * ist zum anzeigen das es ein pointer ist
-// {
-// 	while (*text!=0x00)							//soll aufhören wenn es 0x00 erreicht hat
-// 	{
-// 		uartputc (*(text++));		// damit alles angezeigt werden soll ++ 
-// 	}
-// }
