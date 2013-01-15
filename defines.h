@@ -4,16 +4,18 @@
 #include "median.h"
 
 #define PRINT 1
-#define DEBUG 
+#define DEBUG 1
+#define PACKAGEDIL 1
+ 
 
 //Print debug messages depending on DEBUG 1 / 0
-#ifdef PRINT
+#if PRINT
 # define UPRINT(x) uartputs(x)
 #else
 # define UPRINT(x) do {} while (0)
 #endif 
 
-#ifdef PRINT
+#if PRINT
 # define UPRINTN(x) uartput_uint16(x)
 #else
 # define UPRINTN(x) do {} while (0)
@@ -21,13 +23,13 @@
 
 
 //Print debug messages depending on DEBUG 1 / 0
-#ifdef DEBUG
+#if DEBUG
 # define DBPRINT(x) uartputs(x)
 #else
 # define DBPRINT(x) do {} while (0)
 #endif 
 
-#ifdef DEBUG
+#if DEBUG
 # define DBPRINTN(x) uartput_uint16(x)
 #else
 # define DBPRINTN(x) do {} while (0)
@@ -121,7 +123,7 @@ volatile ringbuffer* pRbIDrv;
 
 #define I_DRV_ADC_CH	6
 #define U_FUSE_ADC_CH	7
-#define U_24V_ADC_CH		5
+#define U_24V_ADC_CH	5
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -172,6 +174,8 @@ volatile ringbuffer* pRbIDrv;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -197,8 +201,12 @@ volatile ringbuffer* pRbIDrv;
 #define SET_DRV_SLEEP 	PORT_DRV &= ~DRV_SLEEP
 #define SET_GO_A  		PORT_DRV = (PORT_DRV & ~(DRV_MODE)) | (DRV_EN | DRV_PHASE)   
 #define SET_GO_B  		PORT_DRV = (PORT_DRV & ~(DRV_PHASE|DRV_MODE)) | DRV_EN
+
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
 
 #define DDR_REMOTE_SWITCH	DDRA
 #define PIN_REMOTE_SWITCH	PINA
@@ -222,6 +230,23 @@ volatile ringbuffer* pRbIDrv;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
+
+
+#if PACKAGEDIL
+//* LIMIT A OUTPUT PROTOTYPE
+#define DDR_LIMIT_A_OUT   DDRC
+#define PORT_LIMIT_A_OUT  PORTC
+#define LIMIT_A_OUT		 (1<<PC4)
+
+
+//* LIMIT B OUTPUT PROTOTYPE
+#define DDR_LIMIT_B_OUT   DDRC
+#define PORT_LIMIT_B_OUT  PORTC
+#define LIMIT_B_OUT		 (1<<PC6)
+
+#else
+
 //* LIMIT A OUTPUT
 #define DDR_LIMIT_A_OUT   DDRB
 #define PORT_LIMIT_A_OUT  PORTB
@@ -233,18 +258,29 @@ volatile ringbuffer* pRbIDrv;
 #define PORT_LIMIT_B_OUT  PORTB
 #define LIMIT_B_OUT		 (1<<PB0)
 
+#endif
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-//* MOTOR DIRECTION A
+// * MOTOR DIRECTION A
+// #define DDR_DIR_B_LED	 DDRA
+// #define PORT_DIR_B_LED 	 PORTA
+// #define DIR_B_LED		 (1<<PA2)
+// 
+// * MOTOR DIRECTION B
+// #define DDR_DIR_A_LED	DDRA
+// #define PORT_DIR_A_LED 	PORTA
+// #define DIR_A_LED		(1<<PA1)
+
+//* MOTOR DIRECTION A PROTOTYPE
 #define DDR_DIR_B_LED	 DDRA
 #define PORT_DIR_B_LED 	 PORTA
-#define DIR_B_LED		 (1<<PA2)
+#define DIR_B_LED		 (1<<PC5)
 
-//* MOTOR DIRECTION B
+//* MOTOR DIRECTION B PROTOTYPE
 #define DDR_DIR_A_LED	DDRA
 #define PORT_DIR_A_LED 	PORTA
-#define DIR_A_LED		(1<<PA1)
+#define DIR_A_LED		(1<<PC3)
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

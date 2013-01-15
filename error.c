@@ -15,7 +15,7 @@ void error_modul (void)
 		
 	if (error_reg & ERR_NFAULT)																									// UART output at nFault error
 	{
-		uartputs("ERROR VIA NFAULT\r\n error1: OVERHEAT\r\n error2: VOLTAGE+/-\r\n OVER CURRENT\r\n");
+		uartputs("ERROR VIA NFAULT\r\n error1: OVERHEAT\r\n error2: VOLTAGE+/-\r\n error3: OVER CURRENT\r\n");
 	}
 	
 	if (error_reg & ERR_U_DRV_FUSE)																								// UART output by defective motor fuse

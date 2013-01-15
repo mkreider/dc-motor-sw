@@ -113,25 +113,19 @@ int main(void)
 	uint8_t Go_A;
 	uint8_t Go_B;
 	
-	DBPRINT("PROGRAMM INITIALISIERT!!\n");
-	DBPRINT("...\n");
-	DBPRINT("...\n");
+	DBPRINT("PROGRAMM INITIALISIERUNG!!\n");				//  >>>> Delays einfügen um es realer darzustellen
+	DBPRINT("...\n");										//	>>>> Oder entfernen. 
+	DBPRINT("...\n");										//	>>>> Hat keinen Zweck. Dient nur der Optik !!
 	DBPRINT("...\n");
 	DBPRINT("Bereit...\n");
 	
 	
-	
-	
-	
-	
-	
-	
-    while(1)
+	while(1)
     {				 	
 		UPRINT("\f");
 		
 		if (GET_NFAULT)									//* nFault Prüfung						
-		{													
+		{
 			error_reg |= ERR_NFAULT;					// Wenn nFault Fehler meldet dann setze Pin1 des Error Registers auf 1 
 		}
 		
@@ -152,16 +146,16 @@ int main(void)
 			remote_modul ();							// Wenn nicht dann gehe weiter				
 		}		
 		
-		//Local or remote control
+		
 		if(GET_REMOTE_SWITCH)
 		{
-			DBPRINT("Modus: Remote\r\n");
+			UPRINT("Modus: Remote\r\n");
 			Go_A = GET_REMOTE_A;
 			Go_B = GET_REMOTE_B;
 		}			
 		else
 		{
-			DBPRINT("Modus: Local\r\n");
+			UPRINT("Modus: Local\r\n");
 			Go_A = GET_BUTTON_A;
 			Go_B = GET_BUTTON_B;
 				
@@ -170,13 +164,13 @@ int main(void)
 		DBPRINTN(Go_A);
 		DBPRINT(" GoA\r\n");
 		DBPRINTN(Go_B);
-		DBPRINT(" GoB\r\n");
-		DBPRINTN(lastLimit);
-		DBPRINT(" Lastlimit\r\n");
+		DBPRINT(" GoB\r\n\r\n\r\n");
+		UPRINTN(lastLimit);
+		UPRINT(" Lastlimit\r\n");
 	
 			
 		if (GET_LIMIT_A && GET_LIMIT_B)					//* Endschalter abfrage
-		{												// Falls beide Endschalter gedrückt, dann führe Fehler verarbeitung aus.
+		{												//  Falls beide Endschalter gedrückt, dann führe Fehler verarbeitung aus.
 			error_reg |= ERR_LIMITS;
 			error_modul (); 
 		}
@@ -224,7 +218,7 @@ int main(void)
 		}
 		
 		
-		DBPRINT("Median output:\r\n");
+	     DBPRINT("\r\n\r\nMedian output:\r\n");
 		 medIDrv	= median(&pRbIDrv->mem[0]);
 		 medU24		= median(&pRbU24->mem[0]);
 		 medUFuse	= median(&pRbUFuse->mem[0]);
@@ -235,7 +229,38 @@ int main(void)
 		 DBPRINTN(medUFuse);
 		 DBPRINT(" medUFuse \r\n");
 		
-		_delay_ms(500);
+		
+		
+		 DBPRINT("\r\n\r\nMotor:\r\n");
+		 DBPRINT("Typ\tStatus\t	Drehrichtung\tSLEEP\tENABLE\tPHASE\tMODE\r\n");
+		 
+		 if(GET_JMP_MOT_TYPE)   DBPRINT("Klein");
+		 else					DBPRINT("Gross");
+		 DBPRINT("\t");
+		 
+		 if(GET_JMP_MOT_DIR)	DBPRINT("Vorwärts");
+		 else					DBPRINT("Rückwärts");
+		 DBPRINT("\t");
+		 
+		 if(GET_JMP_MOT_DIR)	DBPRINT("Vorwärts");
+		 else					DBPRINT("Rückwärts");
+		 DBPRINT("\t");
+		 
+		 if			((PORT_DRV & ~DRV_EN) | (DRV_MODE)) DBPRINT("BRAKE"); // Motor brake
+		 else if	((PORT_DRV & ~DRV_SLEEP)) DBPRINT("SLEEP"); // Motor SLEEP
+		 else if	((PORT_DRV &  DRV_SLEEP)) DBPRINT("ARMED"); // Motor ARMED
+		 else		DBPRINT("UNKNOWN"); // ?
+		 DBPRINT("\t");
+		 
+		 if			((PORT_DRV & ~DRV_EN) | (DRV_MODE))	DBPRINT("1"); // Motor brake
+		 else											DBPRINT("0");
+		 
+		 
+		
+				
+		
+				
+		_delay_ms(1000);
     }    
         
 	
