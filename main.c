@@ -73,10 +73,10 @@ void init(void)
 	DDR_DIR_A_LED		|= DIR_A_LED;
 	DDR_DIR_B_LED		|= DIR_B_LED;
 	DDR_ERR_LED			|= DIR_ERR_LED;
-														
+	
+	SET_PWR_LED;													
 	MOTOR_BREAK;								//* Motor auf Bremse 
-	SET_DRV_SLEEP;								//* setzen des Motortreibers in den Sleep Modus												// Pull-Ups???
-					
+			
 							
 	if (WDRF == 1)								//* Watchdog Flag Prüfung
 		{
@@ -118,15 +118,23 @@ int main(void)
 	DBPRINT("...\n");										//	>>>> Hat keinen Zweck. Dient nur der Optik !!
 	DBPRINT("...\n");
 	DBPRINT("Bereit...\n");
-	
+	 
 	
 	while(1)
     {				 	
 		UPRINT("\f");
 		
-		if (GET_NFAULT)									//* nFault Prüfung						
+		
+		if (GET_LIMIT_A && GET_LIMIT_B)						//* Endschalter abfrage
+		{													//  Falls beide Endschalter gedrückt, dann führe Fehler verarbeitung aus.
+			error_reg |= ERR_LIMITS;
+			error_modul (); 
+		}
+		
+		
+		if (GET_NFAULT)										//* nFault Prüfung						
 		{
-			error_reg |= ERR_NFAULT;					// Wenn nFault Fehler meldet dann setze Pin1 des Error Registers auf 1 
+			error_reg |= ERR_NFAULT;						// Wenn nFault Fehler meldet dann setze Pin1 des Error Registers auf 1 
 		}
 		
 	
@@ -141,10 +149,10 @@ int main(void)
 		
 		 
 		 
-		 if(PINA & (1<<PA4))						//* Steuerwahl
-		{												// Wenn Umschalter auf High schaltet dann rufe das Remote-Modul auf
-			remote_modul ();							// Wenn nicht dann gehe weiter				
-		}		
+// 		 if(PINA & (1<<PA4))						//* Steuerwahl
+// 		{												// Wenn Umschalter auf High schaltet dann rufe das Remote-Modul auf
+// 			remote_modul ();							// Wenn nicht dann gehe weiter				
+// 		}		
 		
 		
 		if(GET_REMOTE_SWITCH)
@@ -152,6 +160,7 @@ int main(void)
 			UPRINT("Modus: Remote\r\n");
 			Go_A = GET_REMOTE_A;
 			Go_B = GET_REMOTE_B;
+			remote_modul ();
 		}			
 		else
 		{
@@ -169,13 +178,6 @@ int main(void)
 		UPRINT(" Lastlimit\r\n");
 	
 			
-		if (GET_LIMIT_A && GET_LIMIT_B)					//* Endschalter abfrage
-		{												//  Falls beide Endschalter gedrückt, dann führe Fehler verarbeitung aus.
-			error_reg |= ERR_LIMITS;
-			error_modul (); 
-		}
-		
-		
 		if (GET_LIMIT_A && !(GET_LIMIT_B))
 		{
 				DBPRINT("LA=1 LB=0\r\n");	
@@ -232,31 +234,48 @@ int main(void)
 		
 		
 		 DBPRINT("\r\n\r\nMotor:\r\n");
-		 DBPRINT("Typ\tStatus\t	Drehrichtung\tSLEEP\tENABLE\tPHASE\tMODE\r\n");
+		 DBPRINT("Typ\tStatus\t	Motorstatus\tSLEEP\tENABLE\tPHASE\tMODE\r\n");
 		 
-		 if(GET_JMP_MOT_TYPE)   DBPRINT("Klein");
-		 else					DBPRINT("Gross");
+		 if(GET_JMP_MOT_TYPE)   DBPRINT("Typ A");
+		 else					DBPRINT("Typ B");
+		 
+		 DBPRINT("\t");
+		 		 
+		 if			((PORT_DRV & ~DRV_EN) | (DRV_MODE))		DBPRINT("BRAKE"); // Motor BRAKE
+		 else if	((PORT_DRV & ~DRV_SLEEP))				DBPRINT("SLEEP"); // Motor SLEEP
+		 else if	((PORT_DRV &  DRV_SLEEP))				DBPRINT("ARMED"); // Motor ARMED
+		 else		DBPRINT("Unknown"); // ?
+		 
+		 DBPRINT("\t");
+		 DBPRINT("\t");
+		 		 
+		 if			(GET_JMP_MOT_DIR)						DBPRINT("Turn Right");
+		 else if	(((PORT_DRV & ~DRV_EN) | (DRV_MODE)))	DBPRINT("STOP"); // Motor BRAKE
+		 else												DBPRINT("Turn Left");
+		 
+		 DBPRINT("\t");
 		 DBPRINT("\t");
 		 
-		 if(GET_JMP_MOT_DIR)	DBPRINT("Vorwärts");
-		 else					DBPRINT("Rückwärts");
+		 		 		 		 
+		 if			(PORT_DRV & DRV_SLEEP)				DBPRINT ("1"); // Motor Sleep
+		 else											DBPRINT ("0");
+		 
 		 DBPRINT("\t");
 		 
-		 if(GET_JMP_MOT_DIR)	DBPRINT("Vorwärts");
-		 else					DBPRINT("Rückwärts");
-		 DBPRINT("\t");
-		 
-		 if			((PORT_DRV & ~DRV_EN) | (DRV_MODE)) DBPRINT("BRAKE"); // Motor brake
-		 else if	((PORT_DRV & ~DRV_SLEEP)) DBPRINT("SLEEP"); // Motor SLEEP
-		 else if	((PORT_DRV &  DRV_SLEEP)) DBPRINT("ARMED"); // Motor ARMED
-		 else		DBPRINT("UNKNOWN"); // ?
-		 DBPRINT("\t");
-		 
-		 if			((PORT_DRV & ~DRV_EN) | (DRV_MODE))	DBPRINT("1"); // Motor brake
+		 if			(PORT_DRV & DRV_EN)					DBPRINT("1"); // Motor Enable
 		 else											DBPRINT("0");
 		 
+		 DBPRINT("\t");
 		 
-		
+		 if			(PORT_DRV & DRV_PHASE)				DBPRINT("1"); // Motor Phase
+		 else											DBPRINT("0");
+		 
+		 DBPRINT("\t");
+		 
+		 if			(PORT_DRV & DRV_MODE)				DBPRINT("1"); // Motor Mode
+		 else											DBPRINT("0");
+		 
+		DBPRINT("\r\n");
 				
 		
 				

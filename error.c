@@ -35,7 +35,7 @@ void error_modul (void)
 	
 	if (error_reg & ERR_LIMITS)																									// UART output by both limits
 	{
-		uartputs("BOTH LIMIT SWITCHES PRESSED! BROKEN SWICTH?\r\n");
+		uartputs("BOTH LIMIT SWITCHES PRESSED! BROKEN SWITCH?\r\n");
 	}
 	
 	if (error_reg & ERR_ORDER)																									// UART output by input order
@@ -48,14 +48,14 @@ void error_modul (void)
 		uartputs("PROGRAMM TIMED OUT\r\n");
 	}
 	
-	uartputs("TRY TO RESTART\n IF THE ERROR STILL PERSISTS CALL SUPPORT! ");								// Finishing text error modul
+	uartputs("TRY TO RESTART\n IF THE ERROR STILL PERSISTS CALL SUPPORT! ");													// Finishing text error modul
 	
 	while (error_reg !=0)																										// ERROR_LED
 	{
 		//WDT_reset();																											// Watchdog reset
 		PORTD |= (1<<PD5);																										// Error LED on			
 		_delay_ms(500);																											// 500ms delay 
-		PORTD &= ~(1<<PD5);																										// Error LED off
+		PORTD |= ~(1<<PD5);																										// Error LED off
 	}
 	
 	return;

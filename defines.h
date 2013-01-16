@@ -66,15 +66,19 @@ volatile ringbuffer* pRbIDrv;
 #define PIN_NFAULT   	  PINC
 #define PORT_NFAULT  	  PORTC
 #define DDR_NFAULT   	  DDRC
-#define NFAULT       	  (1<<PC1)
+#define NFAULT       	  (1<<PC1)			// <<<<<<< auf anderen PIN legen
 #define GET_NFAULT   	  PIN_NFAULT & NFAULT
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+//* INTERRUPT VECT
 #define LIMIT_A_IRQ			INT0_vect	
 #define LIMIT_B_IRQ			INT1_vect
 #define STOPP				INT2_vect 
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 //* LIMIT A INPUT
 #define PIN_LIMIT_A			PIND
@@ -121,8 +125,8 @@ volatile ringbuffer* pRbIDrv;
 #define GET_I_DRV_ADC	PIN_ADC	& I_DRV_ADC
 #define GET_U_24V_ADC	PIN_ADC & U_24V_ADC
 
-#define I_DRV_ADC_CH	6
 #define U_FUSE_ADC_CH	7
+#define I_DRV_ADC_CH	6
 #define U_24V_ADC_CH	5
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -142,7 +146,7 @@ volatile ringbuffer* pRbIDrv;
 #define DDR_BUTTON_A	DDRC
 #define PIN_BUTTON_A	PINC
 #define PORT_BUTTON_A	PORTC
-#define BUTTON_A	    (1<<PC4)
+#define BUTTON_A	    (1<<PC2)
 #define GET_BUTTON_A	PIN_BUTTON_A & BUTTON_A
 
 
@@ -150,7 +154,7 @@ volatile ringbuffer* pRbIDrv;
 #define DDR_BUTTON_B	DDRC
 #define PIN_BUTTON_B	PINC
 #define PORT_BUTTON_B	PORTC
-#define BUTTON_B	    (1<<PC5)
+#define BUTTON_B	    (1<<PC1)
 #define GET_BUTTON_B	PIN_BUTTON_B & BUTTON_B
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -160,7 +164,7 @@ volatile ringbuffer* pRbIDrv;
 #define DDR_REMOTE_A	DDRC
 #define PIN_REMOTE_A	PINC
 #define PORT_REMOTE_A	PORTC
-#define REMOTE_A	    (1<<PC2)
+#define REMOTE_A	    (1<<PC2)			// <<<<<<< auf anderen PIN legen
 #define GET_REMOTE_A	PIN_REMOTE_A & REMOTE_A
 
 
@@ -170,6 +174,16 @@ volatile ringbuffer* pRbIDrv;
 #define PORT_REMOTE_B	PORTC
 #define REMOTE_B	    (1<<PC3)
 #define GET_REMOTE_B	PIN_REMOTE_B & REMOTE_B
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#define DDR_REMOTE_SWITCH	DDRA
+#define PIN_REMOTE_SWITCH	PINA
+#define PORT_REMOTE_SWITCH	PORTA
+#define REMOTE_SWITCH		(1<<PA4)
+
+#define GET_REMOTE_SWITCH	PIN_REMOTE_SWITCH & REMOTE_SWITCH
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -205,15 +219,6 @@ volatile ringbuffer* pRbIDrv;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
-#define DDR_REMOTE_SWITCH	DDRA
-#define PIN_REMOTE_SWITCH	PINA
-#define PORT_REMOTE_SWITCH	PORTA
-#define REMOTE_SWITCH		(1<<PA4)
-
-#define GET_REMOTE_SWITCH	PIN_REMOTE_SWITCH & REMOTE_SWITCH
 
 
 //* SIGNAL A OUTPUT
@@ -289,6 +294,16 @@ volatile ringbuffer* pRbIDrv;
 #define DDR_ERR_LED		 DDRD
 #define PORT_ERR_LED 	 PORTD
 #define DIR_ERR_LED		 (1<<PD5)
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+//* POWER LED
+#define DDR_PWR_LED		 DDRD
+#define PORT_PWR_LED 	 PORTD
+#define PWR_LED			 (1<<PD6)
+#define SET_PWR_LED		 PORT_PWR_LED = (PORT_PWR_LED & PWR_LED)	
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
