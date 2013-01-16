@@ -31,6 +31,14 @@ void error_modul (void)
 	if (error_reg & ERR_U_24V)																									// UART output by under voltage (24V side) <= 19V
 	{
 		uartputs("BOARD UNDER VOLTAGE (<= 19V)\r\n");
+		uartputs("TRY TO RESTART\n IF THE ERROR STILL PERSISTS CALL SUPPORT! ");
+		while(1)
+		{
+		PORTD |= ((1<<PD5) | (1<<PD6));																										// Error LED on			
+		_delay_ms(500);																											// 500ms delay 
+		PORTD &= ~((1<<PD5) | (1<<PD6));																										// Error LED off
+		_delay_ms(500);
+		}
 	}
 	
 	if (error_reg & ERR_LIMITS)																									// UART output by both limits
@@ -55,7 +63,7 @@ void error_modul (void)
 		//WDT_reset();																											// Watchdog reset
 		PORTD |= (1<<PD5);																										// Error LED on			
 		_delay_ms(500);																											// 500ms delay 
-		PORTD |= ~(1<<PD5);																										// Error LED off
+		PORTD &= ~(1<<PD5);																										// Error LED off
 		_delay_ms(500);
 	}
 	

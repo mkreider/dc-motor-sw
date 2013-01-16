@@ -6,6 +6,7 @@
 #include "median.h"
 
 extern volatile uint8_t lastLimit;
+extern volatile uint8_t measrdy;
 
 void Interrupt_init (void)
 {
@@ -52,29 +53,12 @@ ISR (LIMIT_B_IRQ)
 
 ISR(TIMER1_COMPA_vect)
 {
-	//ADC reads
-	static uint16_t i;
+	if(measrdy < 5) measrdy++;
 	
-	uint16_t IDrv = i;
-	uint16_t U24 = i+1000;
-	uint16_t UFuse = i+10000;
-	/*
-	DBPRINTN(IDrv);
-	DBPRINT(" IDrv \r\n");
-	DBPRINTN(U24);
-	DBPRINT(" U24 \r\n");
-	DBPRINTN(UFuse);
-	DBPRINT(" UFuse \r\n");
-	*/
-	rbInsert(pRbIDrv, IDrv);	
-	rbInsert(pRbU24,  U24);
-	rbInsert(pRbUFuse,UFuse);
-	i++;
-	/*
 	rbInsert(pRbIDrv, ADC_Read(I_DRV_ADC_CH));	
 	rbInsert(pRbU24,  ADC_Read(U_24V_ADC_CH));
 	rbInsert(pRbUFuse, ADC_Read(U_FUSE_ADC_CH));
-	*/
+	
 }
 
 

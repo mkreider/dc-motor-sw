@@ -7,5 +7,6 @@ void init_uart(void);
 void uartputs(const char* text);
 uint8_t uart_getc(void);
 void test_uartgetc(void);
+uint8_t uart_getc_nowait(void);
 
 #endif

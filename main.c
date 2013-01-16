@@ -34,6 +34,7 @@ uint16_t medIDrv;
 uint16_t medU24;
 uint16_t medUFuse;
 volatile uint8_t lastLimit;
+volatile uint8_t measrdy;
 
 						
 						//* Notizen:
@@ -114,6 +115,7 @@ int main(void)
 	
 	uint8_t Go_A;
 	uint8_t Go_B;
+	uint8_t key;
 	
 	DBPRINT("PROGRAMM INITIALISIERUNG!!\n");				//  >>>> Delays einfügen um es realer darzustellen
 	DBPRINT("...\n");										//	>>>> Oder entfernen. 
@@ -126,6 +128,21 @@ int main(void)
     {				 	
 		UPRINT("\f");
 		DBPRINT("\f");
+		
+		
+		if(measrdy > 4)									//if(OVT <= OVR) 
+		{
+			if(medU24 < THRES_UNDERVOLTAGE)
+			{
+				CLR_PWR_LED;
+				error_reg |= ERR_U_24V;
+				error_modul ();
+			}
+		
+		}
+		//else  SET_PWR_LED;	
+		
+		
 		
 		if (GET_LIMIT_A && GET_LIMIT_B)						//* Endschalter abfrage
 		{													//  Falls beide Endschalter gedrückt, dann führe Fehler verarbeitung aus.
@@ -160,16 +177,34 @@ int main(void)
 		if(GET_REMOTE_SWITCH)
 		{
 			UPRINT("Modus: Remote\r\n");
-			Go_A = GET_REMOTE_A;
-			Go_B = GET_REMOTE_B;
+			key = uart_getc_nowait();
+			UPRINT("Key: ");
+			UPRINTN(key);
+			UPRINT("\r\n");
+			
+			if(key == 'a')
+			{
+				Go_A = 1;
+				Go_B = 0;	
+			}
+			
+			else if(key == 'b')
+			{
+				Go_A = 0;
+				Go_B = 1;	
+			}
+			
+			
+			
 			remote_modul ();
 		}			
 		else
 		{
+			
 			UPRINT("Modus: Local\r\n");
-			Go_A = GET_BUTTON_A;
-			Go_B = GET_BUTTON_B;
-				
+			if(GET_BUTTON_A) Go_A = 1;
+			else if(GET_BUTTON_B) Go_B = 1;
+			
 		}
 			
 		DBPRINTN(Go_A);
@@ -189,6 +224,13 @@ int main(void)
 					Motor_RE();
 					UPRINT("Fahre Richtung B\r\n");	
 				}
+				if (Go_A)
+				{
+					Go_A = 0;
+					Motor_stop();
+					UPRINT("Stop bei A\r\n");	
+				}
+				
 		}
 		
 		if (!(GET_LIMIT_A) && GET_LIMIT_B)
@@ -199,6 +241,12 @@ int main(void)
 					// Fahre richtung A
 					Motor_FW();
 					UPRINT("Fahre Richtung A\r\n");	
+				}
+				if (Go_B)
+				{
+					Go_B = 0;
+					Motor_stop();
+					UPRINT("Stop bei B\r\n");	
 				}
 		}
 		
@@ -236,7 +284,7 @@ int main(void)
 		
 		
 		 DBPRINT("\r\n\r\nMotor:\r\n");
-		 DBPRINT("Typ\tStatus\t	Motorstatus\tSLEEP\tENABLE\tPHASE\tMODE\r\n");
+		 DBPRINT("Typ\tStatus\tMotorstatus\tSLEEP\tENABLE\tPHASE\tMODE\r\n");
 		 
 		 if(GET_JMP_MOT_TYPE)   DBPRINT("Typ A");
 		 else					DBPRINT("Typ B");
@@ -255,6 +303,7 @@ int main(void)
 		 else if	(((PORT_DRV & ~DRV_EN) | (DRV_MODE)))	DBPRINT("STOP"); // Motor BRAKE
 		 else												DBPRINT("Turn Left");
 		 
+		 DBPRINT("\t");
 		 DBPRINT("\t");
 		 DBPRINT("\t");
 		 
@@ -281,7 +330,7 @@ int main(void)
 				
 		
 				
-		_delay_ms(1000);
+		_delay_ms(100);
     }    
         
 	

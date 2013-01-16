@@ -17,6 +17,7 @@ void Motor_stop(void)
 
 void Motor_FW(void)
 {
+	
 	SET_DRV_ARM;								// set the Driver into sleep mode
 	SET_GO_A;								// Motor Driver on break --> Sleep have to be activated for fast decay mode	
 	return;

@@ -7,6 +7,9 @@
 #define DEBUG 1 
 
 #define PACKAGEDIL 1
+
+
+#define THRES_UNDERVOLTAGE 600
  
 
 //Print debug messages depending on DEBUG 1 / 0
@@ -126,9 +129,9 @@ volatile ringbuffer* pRbIDrv;
 #define GET_I_DRV_ADC	PIN_ADC	& I_DRV_ADC
 #define GET_U_24V_ADC	PIN_ADC & U_24V_ADC
 
-#define U_FUSE_ADC_CH	7
-#define I_DRV_ADC_CH	6
-#define U_24V_ADC_CH	5
+#define U_FUSE_ADC_CH	2	//7
+#define I_DRV_ADC_CH	1	//6
+#define U_24V_ADC_CH	0	//5
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -306,6 +309,7 @@ volatile ringbuffer* pRbIDrv;
 #define PWR_LED			 (1<<PD6)
 
 #define SET_PWR_LED		 PORT_PWR_LED |= PWR_LED
+#define CLR_PWR_LED		 PORTD &= ~(1<<PD6);					//!(PORT_PWR_LED |= PWR_LED)
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

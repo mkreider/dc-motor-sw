@@ -49,6 +49,18 @@ uint8_t uart_getc(void)
 }
 
 
+uint8_t uart_getc_nowait(void)
+{
+	if(UCSRA & (1<<RXC))
+	{
+		return UDR;
+	}
+	
+	else
+	{
+		return 0;
+	}
+}
 
 
 void init_uart()
