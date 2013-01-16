@@ -73,6 +73,8 @@ void init(void)
 	DDR_DIR_A_LED		|= DIR_A_LED;
 	DDR_DIR_B_LED		|= DIR_B_LED;
 	DDR_ERR_LED			|= DIR_ERR_LED;
+	DDR_PWR_LED			|= PWR_LED;
+	
 	
 	SET_PWR_LED;													
 	MOTOR_BREAK;								//* Motor auf Bremse 
@@ -123,7 +125,7 @@ int main(void)
 	while(1)
     {				 	
 		UPRINT("\f");
-		
+		DBPRINT("\f");
 		
 		if (GET_LIMIT_A && GET_LIMIT_B)						//* Endschalter abfrage
 		{													//  Falls beide Endschalter gedrückt, dann führe Fehler verarbeitung aus.

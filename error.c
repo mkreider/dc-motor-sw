@@ -56,7 +56,9 @@ void error_modul (void)
 		PORTD |= (1<<PD5);																										// Error LED on			
 		_delay_ms(500);																											// 500ms delay 
 		PORTD |= ~(1<<PD5);																										// Error LED off
+		_delay_ms(500);
 	}
+	
 	
 	return;
 }

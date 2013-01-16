@@ -4,7 +4,8 @@
 #include "median.h"
 
 #define PRINT 1
-#define DEBUG 1
+#define DEBUG 1 
+
 #define PACKAGEDIL 1
  
 
@@ -63,10 +64,10 @@ volatile ringbuffer* pRbIDrv;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 //* MOTOR DRIVER NFAULT PIN
-#define PIN_NFAULT   	  PINC
-#define PORT_NFAULT  	  PORTC
-#define DDR_NFAULT   	  DDRC
-#define NFAULT       	  (1<<PC1)			// <<<<<<< auf anderen PIN legen
+#define PIN_NFAULT   	  PINA
+#define PORT_NFAULT  	  PORTA
+#define DDR_NFAULT   	  DDRA
+#define NFAULT       	  (1<<PA6)			// <<<<<<< auf anderen PIN legen
 #define GET_NFAULT   	  PIN_NFAULT & NFAULT
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -164,7 +165,7 @@ volatile ringbuffer* pRbIDrv;
 #define DDR_REMOTE_A	DDRC
 #define PIN_REMOTE_A	PINC
 #define PORT_REMOTE_A	PORTC
-#define REMOTE_A	    (1<<PC2)			// <<<<<<< auf anderen PIN legen
+#define REMOTE_A	    (1<<PC0)			// <<<<<<< auf anderen PIN legen
 #define GET_REMOTE_A	PIN_REMOTE_A & REMOTE_A
 
 
@@ -303,7 +304,8 @@ volatile ringbuffer* pRbIDrv;
 #define DDR_PWR_LED		 DDRD
 #define PORT_PWR_LED 	 PORTD
 #define PWR_LED			 (1<<PD6)
-#define SET_PWR_LED		 PORT_PWR_LED = (PORT_PWR_LED & PWR_LED)	
+
+#define SET_PWR_LED		 PORT_PWR_LED |= PWR_LED
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -336,10 +338,10 @@ volatile ringbuffer* pRbIDrv;
 #define DDR_NC1			 DDRA
 #define PORT_NC1 		 PORTA
 #define NC1				 (0<<PA2)
-
-#define DDR_NC2			 DDRC
-#define PORT_NC2 		 PORTC
-#define NC2 			 (0<<PC0)
+// 
+// #define DDR_NC2			 DDRC
+// #define PORT_NC2 		 PORTC
+// #define NC2 			 (0<<PC0)
 
 #define DDR_NC3			 DDRA
 #define PORT_NC3 		 PORTA
