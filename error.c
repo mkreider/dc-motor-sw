@@ -1,16 +1,18 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
+#include <avr/wdt.h>
 #include "defines.h"
 #include "Int.h"
 #include "uart.h"
 #include "Stop.h"
 #include "error.h"
 
+
 void error_modul (void)
 {
 	cli();																														// Global Interrupt Enable off
-	//WDT_reset();
+	wdt_reset();
 	Motor_stop();																												// Motor stop with fast decay 
 		
 	if (error_reg & ERR_NFAULT)																									// UART output at nFault error
@@ -60,9 +62,10 @@ void error_modul (void)
 	
 	while (error_reg !=0)																										// ERROR_LED
 	{
-		//WDT_reset();																											// Watchdog reset
+		wdt_reset();																											// Watchdog reset
 		PORTD |= (1<<PD5);																										// Error LED on			
-		_delay_ms(500);																											// 500ms delay 
+		_delay_ms(500);
+		wdt_reset();																											// 500ms delay 
 		PORTD &= ~(1<<PD5);																										// Error LED off
 		_delay_ms(500);
 	}

@@ -4,13 +4,16 @@
 #include "Stop.h"
 #include "uart.h"
 #include "median.h"
+#include "adc.h"
+#include <avr/wdt.h>
 
 extern volatile uint8_t lastLimit;
 extern volatile uint8_t measrdy;
+extern volatile uint8_t stop;
 
 void Interrupt_init (void)
 {
-	GICR	= (1<<INT0) | (1<<INT1) | (1<<INT2);					//Activate Int0..Int2
+	GICR	= (1<<INT2);// | (1<<INT0) | (1<<INT1);					//Activate Int0..Int2
 	MCUCR	= (1<<ISC11) | (1<<ISC10) | (1<<ISC01) | (1<<ISC00); //Trigger Int0 and Int1 on rising edge
 	
 	TIMSK	= (1<<OCIE1A);	//Activate Timer1 Output Compare Interrupt
@@ -24,19 +27,15 @@ void Interrupt_init (void)
 
 void WDT_init (void)
 {
-	WDTCR = (1<<WDE) | (1<<WDP2) | (1<<WDP1) | (0<<WDP0);
+	WDTCR = (1<<WDE) | (1<<WDP2) | (1<<WDP1);
 	
 }
 
 
-void WDT_reset (void)
-{
-	WDTCR = (1<<WDTOE); 
-	WDTCR = (0<<WDE);
-	WDTCR = (1<<WDE) | (0<<WDTOE);
-	
-}
 
+	
+
+/*
 ISR (LIMIT_A_IRQ) 
 {
 	Motor_stop();
@@ -48,9 +47,10 @@ ISR (LIMIT_B_IRQ)
 {
 	Motor_stop();
 	lastLimit = 1;
+	
 
 }
-
+*/
 ISR(TIMER1_COMPA_vect)
 {
 	if(measrdy < 5) measrdy++;

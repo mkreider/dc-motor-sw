@@ -22,6 +22,7 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include <stdio.h>
+#include <avr/wdt.h>
 #include "defines.h"
 #include "adc.h"
 #include "median.h"
@@ -29,6 +30,7 @@
 #include "int.h"
 #include "error.h"
 #include "remote.h"
+#include "Stop.h"
 
 uint16_t medIDrv;
 uint16_t medU24;
@@ -67,8 +69,8 @@ void init(void)
 	
 	//Output
 	DDR_DRV				|= DRV_EN | DRV_MODE | DRV_PHASE | DRV_SLEEP;
-	DDR_SIGNAL_A_OUT	|= SIGNAL_A_OUT;
-	DDR_SIGNAL_B_OUT	|= SIGNAL_B_OUT;
+	//DDR_SIGNAL_A_OUT	|= SIGNAL_A_OUT;
+	//DDR_SIGNAL_B_OUT	|= SIGNAL_B_OUT;
 	DDR_LIMIT_A_OUT		|= LIMIT_A_OUT;
 	DDR_LIMIT_B_OUT		|= LIMIT_B_OUT;
 	DDR_DIR_A_LED		|= DIR_A_LED;
@@ -81,11 +83,11 @@ void init(void)
 	MOTOR_BREAK;								//* Motor auf Bremse 
 			
 							
-	if (WDRF == 1)								//* Watchdog Flag Prüfung
-		{
-			error_reg |= ERR_WATCHDOG;			// Wenn ein Watchdog Reset vorlag dann setze Pin 6 des Error Registers auf 1
-			MCUCSR = ~(1<<WDRF);				// Lösche das Flag wieder
-		}
+	if (MCUCSR & (1<<WDRF))								//* Watchdog Flag Prüfung
+	{
+		error_reg |= ERR_WATCHDOG;			// Wenn ein Watchdog Reset vorlag dann setze Pin 6 des Error Registers auf 1
+		MCUCSR = ~(1<<WDRF);				// Lösche das Flag wieder
+	}
 		
 	init_uart();								//* Rufe UART init auf
 	ADC_init ();								//* Rufe ADC init auf
@@ -99,7 +101,7 @@ void init(void)
 	rbInit(pRbIDrv);
 								
 	Interrupt_init();							//* Rufe Interrupt init auf
-	//WDT_init ();								//* Rufe Watchdog Init auf
+	WDT_init ();								//* Rufe Watchdog Init auf
 	
 	
 	
@@ -113,8 +115,8 @@ int main(void)
 {
 	init();										//* Rufe init auf
 	
-	uint8_t Go_A;
-	uint8_t Go_B;
+	uint8_t Go_A=0;
+	uint8_t Go_B=0;
 	uint8_t key;
 	
 	DBPRINT("PROGRAMM INITIALISIERUNG!!\n");				//  >>>> Delays einfügen um es realer darzustellen
@@ -140,7 +142,7 @@ int main(void)
 			}
 		
 		}
-		//else  SET_PWR_LED;	
+	
 		
 		
 		
@@ -197,115 +199,161 @@ int main(void)
 			
 			
 			remote_modul ();
-		}			
+		}	
+				
 		else
 		{
+			UPRINT("Modus: Local\r\n\r\n");
 			
-			UPRINT("Modus: Local\r\n");
-			if(GET_BUTTON_A) Go_A = 1;
-			else if(GET_BUTTON_B) Go_B = 1;
-			
+			if(GET_BUTTON_A && GET_BUTTON_B) {Go_A = 0; Go_B = 0;}
+			if(GET_BUTTON_A) {Go_A = 1; Go_B = 0;}
+			if(GET_BUTTON_B) {Go_A = 0; Go_B = 1;}
+					 
+				 	
 		}
 			
-		DBPRINTN(Go_A);
-		DBPRINT(" GoA\r\n");
-		DBPRINTN(Go_B);
-		DBPRINT(" GoB\r\n\r\n\r\n");
+		
 		UPRINTN(lastLimit);
 		UPRINT(" Lastlimit\r\n");
 	
-			
-		if (GET_LIMIT_A && !(GET_LIMIT_B))
-		{
-				DBPRINT("LA=1 LB=0\r\n");	
-				if (Go_B)
-				{
-					// Fahre richtung B
-					Motor_RE();
-					UPRINT("Fahre Richtung B\r\n");	
-				}
-				if (Go_A)
-				{
-					Go_A = 0;
-					Motor_stop();
-					UPRINT("Stop bei A\r\n");	
-				}
+		
+	
+		if(GET_LIMIT_A) TURN_ON(PORT_LMT_A_LED, LMT_A_LED);
+		else			TURN_OFF(PORT_LMT_A_LED, LMT_A_LED);		
 				
-		}
-		
-		if (!(GET_LIMIT_A) && GET_LIMIT_B)
+		if(GET_LIMIT_B) TURN_ON(PORT_LMT_B_LED, LMT_B_LED);
+		else			TURN_OFF(PORT_LMT_B_LED, LMT_B_LED);	
+	
+		if(GET_MOTOR_STOP)
 		{
-				DBPRINT("LA=0 LB=1\r\n");
-				if (Go_A)
-				{
-					// Fahre richtung A
-					Motor_FW();
-					UPRINT("Fahre Richtung A\r\n");	
-				}
-				if (Go_B)
-				{
-					Go_B = 0;
-					Motor_stop();
-					UPRINT("Stop bei B\r\n");	
-				}
+			Go_A = 0; Go_B = 0;
+			Motor_stop();
+			TURN_OFF(PORT_DIR_A_LED , DIR_A_LED );
+			TURN_OFF(PORT_DIR_B_LED , DIR_B_LED );
 		}
-		
-		if (!(GET_LIMIT_A) && !(GET_LIMIT_B))
+		else
 		{
-				DBPRINT("LA=0 LB=0\r\n");
-				if (Go_A)
-				{
-					// Fahre richtung A
-					Motor_FW();
-					UPRINT("Fahre Richtung A\r\n");
-				}
-				else if (Go_B)
-				{
-					// Fahre richtung B
-					Motor_RE();
-					UPRINT("Fahre Richtung B\r\n");
+			
+					
+			if (GET_LIMIT_A && !(GET_LIMIT_B))				//Endschalter A gedrueckt, Endschalter B nicht gedreuckt
+			{
+					DBPRINT("LA=1 LB=0\r\n");
+				
+					if (Go_B)								//Fahre B
+					{
+						// Fahre richtung B
+						Motor_RE();
+					
+					
+						TURN_ON(PORT_DIR_B_LED , DIR_B_LED );
+						TURN_OFF(PORT_DIR_A_LED , DIR_A_LED );
+					
+						UPRINT("Fahre Richtung B\r\n");	
+					}
+					if (Go_A)								//Fahre A
+					{
+						Go_A = 0;
+						Motor_stop();
+				
+						TURN_OFF(PORT_DIR_A_LED , DIR_A_LED );
+						TURN_OFF(PORT_DIR_B_LED , DIR_B_LED );
+					
+						UPRINT("\r\n Stop bei A\r\n");	
+					}
+				
+			}
+		
+			if (!(GET_LIMIT_A) && GET_LIMIT_B)				//Endschalter B gedrueckt, Endschalter A nicht gedrueckt
+			{
+					DBPRINT("LA=0 LB=1\r\n");
+			
+					if (Go_A)								//Fahre A
+					{
+						// Fahre richtung A
+						Motor_FW();
+					
+										
+						TURN_ON(PORT_DIR_A_LED , DIR_A_LED );
+						TURN_OFF(PORT_DIR_B_LED , DIR_B_LED );
+					
+						UPRINT("Fahre Richtung A\r\n");	
+					}
+					if (Go_B)								//Fahre B
+					{
+						Go_B = 0;
+						Motor_stop();
+					
+						TURN_OFF(PORT_DIR_A_LED , DIR_A_LED );
+						TURN_OFF(PORT_DIR_B_LED , DIR_B_LED );
+					
+						UPRINT("\r\n Stop bei B\r\n");	
+					}
+			}
+		
+			if (!(GET_LIMIT_A) && !(GET_LIMIT_B))			//Kein Endschalter betaetigt
+			{
+					DBPRINT("LA=0 LB=0\r\n");
+				
+					if (Go_A)
+					{
+						// Fahre richtung A
+						Motor_FW();
+						TURN_ON(PORT_DIR_A_LED , DIR_A_LED );
+						TURN_OFF(PORT_DIR_B_LED , DIR_B_LED );
+					
+						UPRINT("Fahre Richtung A\r\n");
+					}
+					else if (Go_B)
+					{
+						// Fahre richtung B
+						Motor_RE();
+						TURN_ON(PORT_DIR_B_LED , DIR_B_LED );
+						TURN_OFF(PORT_DIR_A_LED , DIR_A_LED );
+					
+					
+						UPRINT("Fahre Richtung B\r\n");
 					
 	
-				}
-		}
+					}
+			}
+		}		
 		
-		
-	     DBPRINT("\r\n\r\nMedian output:\r\n");
+
 		 medIDrv	= median(&pRbIDrv->mem[0]);
 		 medU24		= median(&pRbU24->mem[0]);
 		 medUFuse	= median(&pRbUFuse->mem[0]);
+	     DBPRINT("\r\n\r\nMedian output:\r\n");		 
 		 DBPRINTN(medIDrv);
-		 DBPRINT(" medIDrv \r\n");
-		 DBPRINTN(medU24);
-		 DBPRINT(" medU24 \r\n");
-		 DBPRINTN(medUFuse);
-		 DBPRINT(" medUFuse \r\n");
+		 DBPRINT("\t mA medIDrv \r\n");
+		 DBPRINTN(medU24*24);
+		 DBPRINT("\t mV medU24 \r\n");
+		 DBPRINTN(medUFuse*24);
+		 DBPRINT("\t mV medUFuse \r\n");
 		
 		
 		
 		 DBPRINT("\r\n\r\nMotor:\r\n");
-		 DBPRINT("Typ\tStatus\tMotorstatus\tSLEEP\tENABLE\tPHASE\tMODE\r\n");
+		 DBPRINT("Typ\tStatus\tMotorDirection\tSLEEP\tENABLE\tPHASE\tMODE\r\n");
 		 
 		 if(GET_JMP_MOT_TYPE)   DBPRINT("Typ A");
 		 else					DBPRINT("Typ B");
 		 
 		 DBPRINT("\t");
 		 		 
-		 if			((PORT_DRV & ~DRV_EN) | (DRV_MODE))		DBPRINT("BRAKE"); // Motor BRAKE
-		 else if	((PORT_DRV & ~DRV_SLEEP))				DBPRINT("SLEEP"); // Motor SLEEP
-		 else if	((PORT_DRV &  DRV_SLEEP))				DBPRINT("ARMED"); // Motor ARMED
+		 if			( (PORT_DRV & ~DRV_EN) && (PORT_DRV & DRV_MODE) )		DBPRINT("BRAKE"); // Motor BRAKE
+		 else if	(!(PORT_DRV & DRV_SLEEP))				DBPRINT("SLEEP"); // Motor SLEEP
+		 else if	((PORT_DRV & DRV_SLEEP))				DBPRINT("ARMED"); // Motor ARMED
 		 else		DBPRINT("Unknown"); // ?
 		 
 		 DBPRINT("\t");
-		 DBPRINT("\t");
+		 //DBPRINT("\t");
 		 		 
 		 if			(GET_JMP_MOT_DIR)						DBPRINT("Turn Right");
-		 else if	(((PORT_DRV & ~DRV_EN) | (DRV_MODE)))	DBPRINT("STOP"); // Motor BRAKE
 		 else												DBPRINT("Turn Left");
 		 
 		 DBPRINT("\t");
-		 DBPRINT("\t");
-		 DBPRINT("\t");
+		 //DBPRINT("\t");
+		 //DBPRINT("\t");
 		 
 		 		 		 		 
 		 if			(PORT_DRV & DRV_SLEEP)				DBPRINT ("1"); // Motor Sleep
@@ -327,10 +375,11 @@ int main(void)
 		 else											DBPRINT("0");
 		 
 		DBPRINT("\r\n");
-				
+		
+		wdt_reset();	
 		
 				
-		_delay_ms(100);
+		_delay_ms(111);
     }    
         
 	
