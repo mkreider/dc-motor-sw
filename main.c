@@ -38,8 +38,7 @@ uint16_t medUFuse;
 volatile uint8_t lastLimit;
 volatile uint8_t measrdy;
 
-						
-						//* Notizen:
+							//* Notizen:
 							
 							//* Software
 							
