@@ -43,6 +43,11 @@
 
 volatile uint8_t error_reg;				//	Error Register for fault detection 											
 
+uint16_t medIDrv;
+uint16_t medU24;
+uint16_t medUFuse;
+volatile uint8_t lastLimit;
+volatile uint8_t measrdy;
 
 volatile ringbuffer rbUFuse;
 volatile ringbuffer rbU24;
