@@ -107,49 +107,16 @@ int main(void)
 	
 	while(1)
     {				 	
-		UPRINT("\f");									// Terminal form feed
-		
-		
-// 		if(measrdy > 4)									// if(OVT <= OVR) 
-// 		{
-// 			if(medU24 < THRES_UNDERVOLTAGE)
-// 			{
-// 				CLR_PWR_LED;
-// 				error_reg |= ERR_U_24V;
-// 				error_modul ();
-// 			}
-// 		}
-			
-		
-// 		if (GET_LIMIT_A && GET_LIMIT_B)						//* Check limit switches		//Endschalter abfrage
-// 		{													//  Run an error process if both limit switches are pressed			//Falls beide Endschalter gedrückt, dann führe Fehler verarbeitung aus.
-// 			error_reg |= ERR_LIMITS;
-// 			error_modul (); 
-// 		}
-		
-		
-// 		if (GET_NFAULT)										//* Check nFAULT form the motor driver		//nFault Prüfung						
-// 		{
-// 			error_reg |= ERR_NFAULT;						// Set bit1 of the error register if a nFault error occurs		 //Wenn nFault Fehler meldet dann setze Pin1 des Error Registers auf 1 
-// 		}
+		UPRINT("\f");										// Terminal form feed
+		DBPRINT("\f");										// Terminal form feed
 		
 	
 		if (error_reg != 0)									//* Fault detection			//Fehlererkennung
 		{													// Call "error_modul" if an error occurs		//Wenn ein Fehler vorliegt dann rufe  das Error-Modul auf
 			error_modul ();									
 		}
-		
-	     
-		
-		
-		 
-		 
-// 		 if(PINA & (1<<PA4))								//* Control selection		//Steuerwahl
-// 		{													// Wenn Umschalter auf High schaltet dann rufe das Remote-Modul auf
-// 			remote_modul ();								// Wenn nicht dann gehe weiter				
-// 		}		
-		
-		
+
+
 		if(GET_REMOTE_SWITCH)								//If the remote switch is set (PA4) the move direction can be remote controlled by pressing a or b...
 		{													//... on the keyboard of the PC which is connected through the UART with the motor control board
 			UPRINT("Modus: Remote\r\n");

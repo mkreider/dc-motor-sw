@@ -23,17 +23,25 @@ void error_median_check (void)
 		
 		return;
 }
+
+
 void error_limits_check (void) 
 {
-	if (GET_LIMIT_A && GET_LIMIT_B)						//! Check limit switches		//Endschalter abfrage
-	{													//  Run an error process if both limit switches are pressed			//Falls beide Endschalter gedrückt, dann führe Fehler verarbeitung aus.
+	if (GET_LIMIT_A && GET_LIMIT_B)				//! Check limit switches		//Endschalter abfrage
+		{											//  Run an error process if both limit switches are pressed			//Falls beide Endschalter gedrückt, dann führe Fehler verarbeitung aus.
 		error_reg |= ERR_LIMITS;
 		error_modul (); 
-	}
+		}			
 }
 
-void error_nfault_check (void);
-void error_error_reg_check (void);
+void error_nfault_check (void)
+{
+	 if (GET_NFAULT)							//* Check nFAULT form the motor driver		//nFault Prüfung						
+ 	{
+ 		error_reg |= ERR_NFAULT;				// Set bit1 of the error register if a nFault error occurs		 //Wenn nFault Fehler meldet dann setze Pin1 des Error Registers auf 1 
+ 	}
+}
+
 
 void error_modul (void)
 {
