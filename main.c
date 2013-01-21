@@ -111,6 +111,10 @@ int main(void)
 		DBPRINT("\f");										// Terminal form feed
 		
 	
+	 error_median_check();
+	 error_limits_check();
+	 error_nfault_check();
+	 
 		if (error_reg != 0)									//* Fault detection			//Fehlererkennung
 		{													// Call "error_modul" if an error occurs		//Wenn ein Fehler vorliegt dann rufe  das Error-Modul auf
 			error_modul ();									
