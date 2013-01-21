@@ -7,7 +7,33 @@
 #include "uart.h"
 #include "Motor.h"
 #include "error.h"
+#include "median.h"
 
+void error_median_check (void)
+{
+	if(measrdy > 4)									// if(OVT <= OVR) 
+		{
+			if(medU24 < THRES_UNDERVOLTAGE)
+			{
+				CLR_PWR_LED;
+				error_reg |= ERR_U_24V;
+				error_modul ();
+			}
+		}
+		
+		return;
+}
+void error_limits_check (void) 
+{
+	if (GET_LIMIT_A && GET_LIMIT_B)						//! Check limit switches		//Endschalter abfrage
+	{													//  Run an error process if both limit switches are pressed			//Falls beide Endschalter gedrückt, dann führe Fehler verarbeitung aus.
+		error_reg |= ERR_LIMITS;
+		error_modul (); 
+	}
+}
+
+void error_nfault_check (void);
+void error_error_reg_check (void);
 
 void error_modul (void)
 {
@@ -73,5 +99,4 @@ void error_modul (void)
 	}
 	
 	
-	return;
 }

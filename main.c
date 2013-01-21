@@ -1,7 +1,7 @@
 /*
  * Projekt DC Motorsteuerung
  *
- * Projektleiter: Herz Tim
+ * Herz Tim
  * Nadja Fischer
  * Burkhard Philip 
  * Karadeniz Burak
@@ -15,7 +15,7 @@
   
  * Created: 13.11.2012 13:45:06
  *
- * Last edited on: 17.12.2012
+ * Last edited on: 21.01.2013
  */ 
 
 #include <avr/io.h>
@@ -32,11 +32,6 @@
 #include "remote.h"
 #include "Motor.h"
 
-uint16_t medIDrv;
-uint16_t medU24;
-uint16_t medUFuse;
-volatile uint8_t lastLimit;
-volatile uint8_t measrdy;
 
 						
 						//* ToDo:
@@ -52,12 +47,13 @@ volatile uint8_t measrdy;
 							
 							//  Power-Up Timer im Init nötig?		
 							//  EXT. QUARZ einstellen
-							
+							//	MOTOR_DIR & MOTOR_TYPE CHECK >>> ohne funktion >> Error: "IF WITHOUT EXPRESSION" 
 		
 		
-		
-		
-void init(void)			
+/**		
+  *	
+  */
+void init(void)		//! Initialisation for Ports, Uart, ADC, IRQ and Watchdog	
 {			
 													//* Einfügen der benötigten Konstanten und Variablen
 	error_reg = 0x00;								// Error Register zur Fehlererkennung							
@@ -77,80 +73,65 @@ void init(void)
 	MOTOR_BREAK;								//* Engine on brake
 			
 							
-	if (MCUCSR & (1<<WDRF))								//* Checking the watchdog-flag
+	if (MCUCSR & (1<<WDRF))						//* Checking the watchdog-flag
 	{
-		error_reg |= ERR_WATCHDOG;			// If a watchdog reset occurs, set bit 6 of the error registerhigh		// Wenn ein Watchdog Reset vorlag dann setze Pin 6 des Error Registers auf 1
-		MCUCSR = ~(1<<WDRF);				// Delete the watchdog flag			//Lösche das Flag wieder
+		error_reg |= ERR_WATCHDOG;				// If a watchdog reset occurs, set the bit 6 of the error register high	
+				MCUCSR = ~(1<<WDRF);			// Delete the watchdog flag			
 	}
 		
-	init_uart();								//* Call the UART init		//Rufe UART init auf
-	ADC_init ();								//* Call the ADC init		//Rufe ADC init auf
+	
+	init_uart();								// Call the UART init		//Rufe UART init auf
+	ADC_init ();								// Call the ADC init		//Rufe ADC init auf
 	
 	pRbUFuse= &rbUFuse;
 	pRbU24	= &rbU24;
 	pRbIDrv = &rbIDrv;
 	
-	rbInit(pRbUFuse);							//* Init ring buffers for median
+	rbInit(pRbUFuse);							// Init ring buffers for median
 	rbInit(pRbU24);
 	rbInit(pRbIDrv);
 								
-	Interrupt_init();							//* Call Interrupt init		//Rufe Interrupt init auf
-	WDT_init ();								//* Call watchdog init		//Rufe Watchdog Init auf
-	
-	
+	Interrupt_init();							// Call Interrupt init		//Rufe Interrupt init auf
+	WDT_init ();								// Call watchdog init		//Rufe Watchdog Init auf
 	
 	return;		
 }
 
-
-
-
 int main(void)
 {
-	init();										//* Call init		//Rufe init auf
+	init();												//* Call init		//Rufe init auf
 	
-	uint8_t Go_A=0;
-	uint8_t Go_B=0;
-	uint8_t key;
-	
-	DBPRINT("PROGRAMM INITIALISIERUNG!!\n");				//  >>>> Delays einfügen um es realer darzustellen
-	DBPRINT("...\n");										//	>>>> Oder entfernen. 
-	DBPRINT("...\n");										//	>>>> Hat keinen Zweck. Dient nur der Optik !!
-	DBPRINT("...\n");
-	DBPRINT("Bereit...\n");
-	 
+	uint8_t Go_A=0;				//! Drive Command memory for direction A
+	uint8_t Go_B=0;				//! Drive Command memory for direction B
+	uint8_t key;				//! Char code from keyboard, currently used for remote ctrl
 	
 	while(1)
     {				 	
-		UPRINT("\f");
-		DBPRINT("\f");
+		UPRINT("\f");									// Terminal form feed
 		
 		
-		if(measrdy > 4)									//if(OVT <= OVR) 
-		{
-			if(medU24 < THRES_UNDERVOLTAGE)
-			{
-				CLR_PWR_LED;
-				error_reg |= ERR_U_24V;
-				error_modul ();
-			}
+// 		if(measrdy > 4)									// if(OVT <= OVR) 
+// 		{
+// 			if(medU24 < THRES_UNDERVOLTAGE)
+// 			{
+// 				CLR_PWR_LED;
+// 				error_reg |= ERR_U_24V;
+// 				error_modul ();
+// 			}
+// 		}
+			
 		
-		}
-	
-		
-		
-		
-		if (GET_LIMIT_A && GET_LIMIT_B)						//* Check limit switches		//Endschalter abfrage
-		{													//  Run an error process if both limit switches are pressed			//Falls beide Endschalter gedrückt, dann führe Fehler verarbeitung aus.
-			error_reg |= ERR_LIMITS;
-			error_modul (); 
-		}
+// 		if (GET_LIMIT_A && GET_LIMIT_B)						//* Check limit switches		//Endschalter abfrage
+// 		{													//  Run an error process if both limit switches are pressed			//Falls beide Endschalter gedrückt, dann führe Fehler verarbeitung aus.
+// 			error_reg |= ERR_LIMITS;
+// 			error_modul (); 
+// 		}
 		
 		
-		if (GET_NFAULT)										//* Check nFAULT form the motor driver		//nFault Prüfung						
-		{
-			error_reg |= ERR_NFAULT;						// Set bit1 of the error register if a nFault error occurs		 //Wenn nFault Fehler meldet dann setze Pin1 des Error Registers auf 1 
-		}
+// 		if (GET_NFAULT)										//* Check nFAULT form the motor driver		//nFault Prüfung						
+// 		{
+// 			error_reg |= ERR_NFAULT;						// Set bit1 of the error register if a nFault error occurs		 //Wenn nFault Fehler meldet dann setze Pin1 des Error Registers auf 1 
+// 		}
 		
 	
 		if (error_reg != 0)									//* Fault detection			//Fehlererkennung
