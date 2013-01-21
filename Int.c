@@ -1,7 +1,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "defines.h"
-#include "Stop.h"
+#include "Motor.h"
 #include "uart.h"
 #include "median.h"
 #include "adc.h"
@@ -32,25 +32,6 @@ void WDT_init (void)
 }
 
 
-
-	
-
-/*
-ISR (LIMIT_A_IRQ) 
-{
-	Motor_stop();
-	lastLimit = 2;
-
-}
-
-ISR (LIMIT_B_IRQ) 
-{
-	Motor_stop();
-	lastLimit = 1;
-	
-
-}
-*/
 ISR(TIMER1_COMPA_vect)
 {
 	if(measrdy < 5) measrdy++;

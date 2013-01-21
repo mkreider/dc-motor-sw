@@ -30,7 +30,7 @@
 #include "int.h"
 #include "error.h"
 #include "remote.h"
-#include "Stop.h"
+#include "Motor.h"
 
 uint16_t medIDrv;
 uint16_t medU24;
@@ -39,10 +39,9 @@ volatile uint8_t lastLimit;
 volatile uint8_t measrdy;
 
 						
-						//* Notizen:
+						//* ToDo:
 							
-							//* Software
-							
+
 							//Spiegelung (Motorrichtung)
 							//Motortyp
 							//Interrupts
@@ -51,20 +50,9 @@ volatile uint8_t measrdy;
 							//Kommentierung
 							
 							
-							//  Power-Up Timer im Init nötig?
-							//  Jedes Interrupt routinen mit Abfrage zu nFault beenden.
-							// 	Fehlermeldung über UART/Blinkende Gelbe LED				
-							//	"Motorerkennung" überarbeiten
-							//	Mit defines arbeiten 
-							//  "Richtung" (siehe Schaltplan) einpflegen
-							//	Abfrage des Watchdog flags - gab es einen Watchdog reset? wenn ja -> error
+							//  Power-Up Timer im Init nötig?		
 							//  EXT. QUARZ einstellen
 							
-							//* Hardware
-							
-							//	Layout ändern --> RGB LED tauschen (LED gb)
-							//	 
-		
 		
 		
 		
@@ -77,8 +65,6 @@ void init(void)
 	
 	//Output										//defining the Outputs
 	DDR_DRV				|= DRV_EN | DRV_MODE | DRV_PHASE | DRV_SLEEP;
-	//DDR_SIGNAL_A_OUT	|= SIGNAL_A_OUT;
-	//DDR_SIGNAL_B_OUT	|= SIGNAL_B_OUT;
 	DDR_LIMIT_A_OUT		|= LIMIT_A_OUT;
 	DDR_LIMIT_B_OUT		|= LIMIT_B_OUT;
 	DDR_DIR_A_LED		|= DIR_A_LED;
@@ -342,8 +328,7 @@ int main(void)
 		 DBPRINT("\r\n\r\nMotor:\r\n");
 		 DBPRINT("Typ\tStatus\tMotorDirection\tSLEEP\tENABLE\tPHASE\tMODE\r\n");
 		 
-		 if(GET_JMP_MOT_TYPE)   DBPRINT("Typ A");
-		 else					DBPRINT("Typ B");
+		 MOTOR_TYPE();
 		 
 		 DBPRINT("\t");
 		 		 
@@ -353,14 +338,10 @@ int main(void)
 		 else		DBPRINT("Unknown"); // ?
 		 
 		 DBPRINT("\t");
-		 //DBPRINT("\t");
 		 		 
-		 if			(GET_JMP_MOT_DIR)						DBPRINT("Turn Right");
-		 else												DBPRINT("Turn Left");
+		 MOTOR_DIR();
 		 
 		 DBPRINT("\t");
-		 //DBPRINT("\t");
-		 //DBPRINT("\t");
 		 
 		 		 		 		 
 		 if			(PORT_DRV & DRV_SLEEP)				DBPRINT ("1"); // Motor Sleep

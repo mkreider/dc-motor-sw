@@ -1,12 +1,12 @@
 ﻿/*
- * Stop.c
+ * Motor.c
  *
  * Created: 17.12.2012 10:19:25
  *  Author: Tim Herz / Burak Karadeniz
  */ 
 #include <avr/io.h>
 #include "defines.h"
-#include "stop.h"
+#include "Motor.h"
 
 void Motor_stop(void)
 {
@@ -33,5 +33,36 @@ void Motor_RE(void)
 	SET_DRV_ARM;								// set the Driver into sleep mode
 	SET_GO_B;
 									// Motor Driver on break --> Sleep have to be activated for fast decay mode	
+	return;
+}
+
+void MOTOR_DIR (void)
+{
+	if(GET_JMP_MOT_DIR)		
+	{
+		DBPRINT("Turn Right");
+		//MOTOR_DIR_CHECK = 1;
+	}
+	 else
+	 {
+		DBPRINT("Turn Left");
+		//MOTOR_DIR_CHECK = 0;
+	 }		
+	return;
+}
+
+void MOTOR_TYPE(void)
+{
+	if(GET_JMP_MOT_TYPE)   
+	{
+		DBPRINT("Typ A");
+		//MOTOR_TYPE_CHECK = 1;
+	}
+		 
+	else
+	{
+		DBPRINT("Typ B");
+		//MOTOR_TYPE_CHECK = 0;
+	}	
 	return;
 }

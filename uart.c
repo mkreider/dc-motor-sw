@@ -69,7 +69,6 @@ void init_uart()
 	UCSRC			=		(1<<URSEL) | (1<<UCSZ1) | (1<<UCSZ0);		// Asynchron, no parity, 1 stop bit, 8 bit size, no CK.	
 	UBRRL			=		0x08;							// Baud rate 57.6k
 	
-	//UCSR0B			|=		(1<<RXEN0);
 }	
 
 	uint8_t tmp;			
