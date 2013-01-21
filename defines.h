@@ -7,12 +7,12 @@
 #define DEBUG 1 
 
 #define PACKAGEDIL 1
-
+#define MOTOR_DIR_CHECK 1
+#define MOTOR_TYPE_CHECK 1
 
 #define THRES_UNDERVOLTAGE 19000/24
 #define THRES_CURRENT_DRV
 #define THRES_FUSE_RDV 
- 
 
 //Print debug messages depending on DEBUG 1 / 0
 #if PRINT
@@ -26,7 +26,6 @@
 #else
 # define UPRINTN(x) do {} while (0)
 #endif 
-
 
 //Print debug messages depending on DEBUG 1 / 0
 #if DEBUG
@@ -53,7 +52,6 @@ volatile ringbuffer* pRbU24;
 volatile ringbuffer* pRbIDrv; 
 
 //*******************>>> INPUTS <<< *******************
-
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -166,24 +164,6 @@ volatile ringbuffer* pRbIDrv;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-//* REMOTE DRIVE A
-// #define DDR_REMOTE_A	DDRC
-// #define PIN_REMOTE_A	PINC
-// #define PORT_REMOTE_A	PORTC
-// #define REMOTE_A	    (1<<PC0)			// <<<<<<< auf anderen PIN legen
-// #define GET_REMOTE_A	PIN_REMOTE_A & REMOTE_A
-
-
-//* REMOTE DRIVE B
-// #define DDR_REMOTE_B	DDRC
-// #define PIN_REMOTE_B	PINC
-// #define PORT_REMOTE_B	PORTC
-// #define REMOTE_B	    (1<<PC3)
-// #define GET_REMOTE_B	PIN_REMOTE_B & REMOTE_B
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 #define DDR_REMOTE_SWITCH	DDRA
 #define PIN_REMOTE_SWITCH	PINA
 #define PORT_REMOTE_SWITCH	PORTA
@@ -195,17 +175,13 @@ volatile ringbuffer* pRbIDrv;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
 
 //*******************>>> OUTPUTS <<< *******************
-
-
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -227,22 +203,6 @@ volatile ringbuffer* pRbIDrv;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-//* SIGNAL A OUTPUT
-// #define DDR_SIGNAL_A_OUT   DDRC
-// #define PORT_SIGNAL_A_OUT  PORTC
-// #define SIGNAL_A_OUT 	  (1<<PC5)
-
-
-//* SIGNAL B OUTPUT
-// #define DDR_SIGNAL_B_OUT   DDRC
-// #define PORT_SIGNAL_B_OUT  PORTC
-// #define SIGNAL_B_OUT 	   (1<<PC3)
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
 
 
@@ -272,8 +232,12 @@ volatile ringbuffer* pRbIDrv;
 #define LIMIT_B_OUT		 (1<<PB0)
 
 #endif
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#if MOTOR_DIR_CHECK
+
 // * MOTOR DIRECTION A
 #define DDR_DIR_A_LED	DDRC
 #define PORT_DIR_A_LED 	PORTC
@@ -299,18 +263,40 @@ volatile ringbuffer* pRbIDrv;
 #define TURN_ON(port,led) port |= led		 
 #define TURN_OFF(port,led) port &= ~led	
 
-//* MOTOR DIRECTION A PROTOTYPE
-// #define DDR_DIR_B_LED	 DDRC
-// #define PORT_DIR_B_LED 	 PORTC
-// #define DIR_B_LED		 (1<<PC5)
-
-//* MOTOR DIRECTION B PROTOTYPE
-// #define DDR_DIR_A_LED	DDRC
-// #define PORT_DIR_A_LED 	PORTC
-// #define DIR_A_LED		(1<<PC3)
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#else
+
+// * MOTOR DIRECTION A
+#define DDR_DIR_A_LED	DDRC
+#define PORT_DIR_A_LED 	PORTC
+#define DIR_A_LED		(1<<PC3)
+
+// * MOTOR DIRECTION B
+#define DDR_DIR_B_LED	 DDRC
+#define PORT_DIR_B_LED 	 PORTC
+#define DIR_B_LED		 (1<<PC5)
+// 
+
+// * LIMIT A
+#define DDR_LMT_A_LED	DDRC
+#define PORT_LMT_A_LED 	PORTC
+#define LMT_A_LED		(1<<PC4)
+
+
+// * LIMIT B
+#define DDR_LMT_B_LED	 DDRC
+#define PORT_LMT_B_LED 	 PORTC
+#define LMT_B_LED		 (1<<PC6)
+
+#define TURN_ON(port,led) port |= led		 
+#define TURN_OFF(port,led) port &= ~led	
+
+#endif
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 //* ERROR LED
 #define DDR_ERR_LED		 DDRD
@@ -319,7 +305,6 @@ volatile ringbuffer* pRbIDrv;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
 //* POWER LED
 #define DDR_PWR_LED		 DDRD
@@ -349,7 +334,6 @@ volatile ringbuffer* pRbIDrv;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-
 //*******************>>> NC'S & ERROR DEFINES <<< *******************
 
 
@@ -360,22 +344,10 @@ volatile ringbuffer* pRbIDrv;
 #define DDR_NC1			 DDRA
 #define PORT_NC1 		 PORTA
 #define NC1				 (0<<PA2)
-// 
-// #define DDR_NC2			 DDRC
-// #define PORT_NC2 		 PORTC
-// #define NC2 			 (0<<PC0)
 
 #define DDR_NC3			 DDRA
 #define PORT_NC3 		 PORTA
 #define NC3				 (0<<PD7)
-
-// #define DDR_NC4			 DDRA
-// #define PORT_NC4 		 PORTA
-// #define NC4				 (0<<PA6)
-
-// #define DDR_NC5			 DDRA
-// #define PORT_NC5 		 PORTA
-// #define NC5				 (0<<PA4)
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~	
