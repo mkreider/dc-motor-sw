@@ -330,7 +330,7 @@ int main(void)
 		 medU24		= median(&pRbU24->mem[0]);
 		 medUFuse	= median(&pRbUFuse->mem[0]);
 	     DBPRINT("\r\n\r\nMedian output:\r\n");		 
-		 DBPRINTN(medIDrv);
+		 DBPRINTN((medIDrv*24)/20);
 		 DBPRINT("\t mA medIDrv \r\n");
 		 DBPRINTN(medU24*24);
 		 DBPRINT("\t mV medU24 \r\n");
