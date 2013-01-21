@@ -43,6 +43,14 @@ volatile uint8_t measrdy;
 							
 							//* Software
 							
+							//Spiegelung (Motorrichtung)
+							//Motortyp
+							//Interrupts
+							//Entprellroutine
+							//Remote
+							//Kommentierung
+							
+							
 							//  Power-Up Timer im Init nötig?
 							//  Jedes Interrupt routinen mit Abfrage zu nFault beenden.
 							// 	Fehlermeldung über UART/Blinkende Gelbe LED				
@@ -67,7 +75,7 @@ void init(void)
 	error_reg = 0x00;								// Error Register zur Fehlererkennung							
 	
 	
-	//Output
+	//Output										//defining the Outputs
 	DDR_DRV				|= DRV_EN | DRV_MODE | DRV_PHASE | DRV_SLEEP;
 	//DDR_SIGNAL_A_OUT	|= SIGNAL_A_OUT;
 	//DDR_SIGNAL_B_OUT	|= SIGNAL_B_OUT;
@@ -80,28 +88,28 @@ void init(void)
 	
 	
 	SET_PWR_LED;													
-	MOTOR_BREAK;								//* Motor auf Bremse 
+	MOTOR_BREAK;								//* Engine on brake
 			
 							
-	if (MCUCSR & (1<<WDRF))								//* Watchdog Flag Prüfung
+	if (MCUCSR & (1<<WDRF))								//* Checking the watchdog-flag
 	{
-		error_reg |= ERR_WATCHDOG;			// Wenn ein Watchdog Reset vorlag dann setze Pin 6 des Error Registers auf 1
-		MCUCSR = ~(1<<WDRF);				// Lösche das Flag wieder
+		error_reg |= ERR_WATCHDOG;			// If a watchdog reset occurs, set bit 6 of the error registerhigh		// Wenn ein Watchdog Reset vorlag dann setze Pin 6 des Error Registers auf 1
+		MCUCSR = ~(1<<WDRF);				// Delete the watchdog flag			//Lösche das Flag wieder
 	}
 		
-	init_uart();								//* Rufe UART init auf
-	ADC_init ();								//* Rufe ADC init auf
+	init_uart();								//* Call the UART init		//Rufe UART init auf
+	ADC_init ();								//* Call the ADC init		//Rufe ADC init auf
 	
 	pRbUFuse= &rbUFuse;
 	pRbU24	= &rbU24;
 	pRbIDrv = &rbIDrv;
 	
-	rbInit(pRbUFuse);							//* Init ringbuffers for median
+	rbInit(pRbUFuse);							//* Init ring buffers for median
 	rbInit(pRbU24);
 	rbInit(pRbIDrv);
 								
-	Interrupt_init();							//* Rufe Interrupt init auf
-	WDT_init ();								//* Rufe Watchdog Init auf
+	Interrupt_init();							//* Call Interrupt init		//Rufe Interrupt init auf
+	WDT_init ();								//* Call watchdog init		//Rufe Watchdog Init auf
 	
 	
 	
@@ -113,7 +121,7 @@ void init(void)
 
 int main(void)
 {
-	init();										//* Rufe init auf
+	init();										//* Call init		//Rufe init auf
 	
 	uint8_t Go_A=0;
 	uint8_t Go_B=0;
@@ -146,23 +154,22 @@ int main(void)
 		
 		
 		
-		if (GET_LIMIT_A && GET_LIMIT_B)						//* Endschalter abfrage
-		{													//  Falls beide Endschalter gedrückt, dann führe Fehler verarbeitung aus.
+		if (GET_LIMIT_A && GET_LIMIT_B)						//* Check limit switches		//Endschalter abfrage
+		{													//  Run an error process if both limit switches are pressed			//Falls beide Endschalter gedrückt, dann führe Fehler verarbeitung aus.
 			error_reg |= ERR_LIMITS;
 			error_modul (); 
 		}
 		
 		
-		if (GET_NFAULT)										//* nFault Prüfung						
+		if (GET_NFAULT)										//* Check nFAULT form the motor driver		//nFault Prüfung						
 		{
-			error_reg |= ERR_NFAULT;						// Wenn nFault Fehler meldet dann setze Pin1 des Error Registers auf 1 
+			error_reg |= ERR_NFAULT;						// Set bit1 of the error register if a nFault error occurs		 //Wenn nFault Fehler meldet dann setze Pin1 des Error Registers auf 1 
 		}
 		
 	
-		if (error_reg != 0)									//* Fehlererkennung
-		{													// Wenn ein Fehler vorliegt dann rufe  das Error-Modul auf
-			error_modul ();									// Wenn nicht dann gehe weiter
-															// erstelllen bzw abändern
+		if (error_reg != 0)									//* Fault detection			//Fehlererkennung
+		{													// Call "error_modul" if an error occurs		//Wenn ein Fehler vorliegt dann rufe  das Error-Modul auf
+			error_modul ();									
 		}
 		
 	     
@@ -170,27 +177,27 @@ int main(void)
 		
 		 
 		 
-// 		 if(PINA & (1<<PA4))						//* Steuerwahl
-// 		{												// Wenn Umschalter auf High schaltet dann rufe das Remote-Modul auf
-// 			remote_modul ();							// Wenn nicht dann gehe weiter				
+// 		 if(PINA & (1<<PA4))								//* Control selection		//Steuerwahl
+// 		{													// Wenn Umschalter auf High schaltet dann rufe das Remote-Modul auf
+// 			remote_modul ();								// Wenn nicht dann gehe weiter				
 // 		}		
 		
 		
-		if(GET_REMOTE_SWITCH)
-		{
+		if(GET_REMOTE_SWITCH)								//If the remote switch is set (PA4) the move direction can be remote controlled by pressing a or b...
+		{													//... on the keyboard of the PC which is connected through the UART with the motor control board
 			UPRINT("Modus: Remote\r\n");
-			key = uart_getc_nowait();
-			UPRINT("Key: ");
+			key = uart_getc_nowait();						//defining "key" with a key-input through the uart
+			UPRINT("Key: ");								//print out a probably pressed key on the remote console
 			UPRINTN(key);
 			UPRINT("\r\n");
 			
-			if(key == 'a')
+			if(key == 'a')									//If key "a" was pressed during remote mode, set Go_a=1 and Go_B=0
 			{
 				Go_A = 1;
 				Go_B = 0;	
 			}
 			
-			else if(key == 'b')
+			else if(key == 'b')								//If key "b" was pressed during remote mode, set Go_a=0 and Go_B=1
 			{
 				Go_A = 0;
 				Go_B = 1;	
@@ -198,76 +205,76 @@ int main(void)
 			
 			
 			
-			remote_modul ();
+			remote_modul ();								//unnecessary in the current version
 		}	
 				
-		else
+		else												//If the remote mode is deactivated, the direction buttons must be pressed direct at the front panel
 		{
 			UPRINT("Modus: Local\r\n\r\n");
 			
-			if(GET_BUTTON_A && GET_BUTTON_B) {Go_A = 0; Go_B = 0;}
-			if(GET_BUTTON_A) {Go_A = 1; Go_B = 0;}
-			if(GET_BUTTON_B) {Go_A = 0; Go_B = 1;}
+			if(GET_BUTTON_A && GET_BUTTON_B) {Go_A = 0; Go_B = 0;}			//if both direction buttons are pressed simultaneously, Go_A and GO_B are 0, the motor stands still
+			if(GET_BUTTON_A) {Go_A = 1; Go_B = 0;}							//if switch A is pressed, set Go_a=1 and Go_B=0 for driving the motor to A
+			if(GET_BUTTON_B) {Go_A = 0; Go_B = 1;}							//if switch A is pressed, set Go_a=1 and Go_B=0 for driving the motor to B
 					 
 				 	
 		}
 			
 		
-		UPRINTN(lastLimit);
+		UPRINTN(lastLimit);													//give out the last pressed limit switch to the remote console
 		UPRINT(" Lastlimit\r\n");
 	
 		
 	
-		if(GET_LIMIT_A) TURN_ON(PORT_LMT_A_LED, LMT_A_LED);
-		else			TURN_OFF(PORT_LMT_A_LED, LMT_A_LED);		
+		if(GET_LIMIT_A) TURN_ON(PORT_LMT_A_LED, LMT_A_LED);					//check if  limit switch A is pressed and show it by LED on the front panel
+		else			TURN_OFF(PORT_LMT_A_LED, LMT_A_LED);				//if limit switch A is not pressed, light off the limit LED for limit switch A
 				
-		if(GET_LIMIT_B) TURN_ON(PORT_LMT_B_LED, LMT_B_LED);
-		else			TURN_OFF(PORT_LMT_B_LED, LMT_B_LED);	
+		if(GET_LIMIT_B) TURN_ON(PORT_LMT_B_LED, LMT_B_LED);					//check if  limit switch B is pressed and show it by LED on the front panel
+		else			TURN_OFF(PORT_LMT_B_LED, LMT_B_LED);				//if limit switch B is not pressed, light off the limit LED for limit switch B
 	
-		if(GET_MOTOR_STOP)
-		{
-			Go_A = 0; Go_B = 0;
-			Motor_stop();
-			TURN_OFF(PORT_DIR_A_LED , DIR_A_LED );
+		if(GET_MOTOR_STOP)													//if the motor stop button is pressed... 
+		{																	
+			Go_A = 0; Go_B = 0;												//... set Go_A=0 and Go_B=0, ...
+			Motor_stop();													//... call the "motorstop()" routine...
+			TURN_OFF(PORT_DIR_A_LED , DIR_A_LED );							//... and light off both direction LED's
 			TURN_OFF(PORT_DIR_B_LED , DIR_B_LED );
 		}
-		else
+		else																//if the motor stop button is not press, than check different status of the A/B buttons and limit switches
 		{
 			
 					
-			if (GET_LIMIT_A && !(GET_LIMIT_B))				//Endschalter A gedrueckt, Endschalter B nicht gedreuckt
+			if (GET_LIMIT_A && !(GET_LIMIT_B))								//Limit switch A is pressed, Limit switch B is not pressed		//Endschalter A gedrueckt, Endschalter B nicht gedreuckt
 			{
-					DBPRINT("LA=1 LB=0\r\n");
+					DBPRINT("LA=1 LB=0\r\n");								//print out to the remote console which limit switch is pressed
 				
-					if (Go_B)								//Fahre B
+					if (Go_B)												//if button B is pressed... 
 					{
 						// Fahre richtung B
-						Motor_RE();
+						Motor_RE();											//... call "Motor_RE" routine for driving the motor to B
 					
 					
-						TURN_ON(PORT_DIR_B_LED , DIR_B_LED );
-						TURN_OFF(PORT_DIR_A_LED , DIR_A_LED );
+						TURN_ON(PORT_DIR_B_LED , DIR_B_LED );				//turn on the LED for driving to B
+						TURN_OFF(PORT_DIR_A_LED , DIR_A_LED );				//turn off the LED for driving A, if the motor was driving to A but not reached it before the driving direction was switched
 					
-						UPRINT("Fahre Richtung B\r\n");	
+						UPRINT("Fahre Richtung B\r\n");						//print out the driving direction int the remote console
 					}
-					if (Go_A)								//Fahre A
+					if (Go_A)												//if button A is pressed, call "Motor_stop", because the motor can't drive to A, if the limit switch A is pressed
 					{
 						Go_A = 0;
 						Motor_stop();
 				
-						TURN_OFF(PORT_DIR_A_LED , DIR_A_LED );
+						TURN_OFF(PORT_DIR_A_LED , DIR_A_LED );				//light off both direction LED's
 						TURN_OFF(PORT_DIR_B_LED , DIR_B_LED );
 					
-						UPRINT("\r\n Stop bei A\r\n");	
+						UPRINT("\r\n Stop bei A\r\n");						//print out to the remote console that he motor stops/stand still	
 					}
 				
 			}
 		
-			if (!(GET_LIMIT_A) && GET_LIMIT_B)				//Endschalter B gedrueckt, Endschalter A nicht gedrueckt
-			{
-					DBPRINT("LA=0 LB=1\r\n");
+			if (!(GET_LIMIT_A) && GET_LIMIT_B)								//limit switch B is pressed, but limit switch A is not pressed			//Endschalter B gedrueckt, Endschalter A nicht gedrueckt
+			{						
+					DBPRINT("LA=0 LB=1\r\n");								//print out which limit switch is pressed to the remote console 
 			
-					if (Go_A)								//Fahre A
+					if (Go_A)												//Fahre A
 					{
 						// Fahre richtung A
 						Motor_FW();

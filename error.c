@@ -36,8 +36,10 @@ void error_modul (void)
 		uartputs("TRY TO RESTART\n IF THE ERROR STILL PERSISTS CALL SUPPORT! ");
 		while(1)
 		{
+		wdt_reset();	
 		PORTD |= ((1<<PD5) | (1<<PD6));																										// Error LED on			
-		_delay_ms(500);																											// 500ms delay 
+		_delay_ms(500);
+		wdt_reset();																											// 500ms delay 
 		PORTD &= ~((1<<PD5) | (1<<PD6));																										// Error LED off
 		_delay_ms(500);
 		}

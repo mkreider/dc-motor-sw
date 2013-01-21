@@ -10,6 +10,8 @@
 
 
 #define THRES_UNDERVOLTAGE 19000/24
+#define THRES_CURRENT_DRV
+#define THRES_FUSE_RDV 
  
 
 //Print debug messages depending on DEBUG 1 / 0
