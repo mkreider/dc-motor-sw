@@ -94,31 +94,4 @@ ringbuffer* rbInsert(ringbuffer* rBuf, uint16_t newVal)
 
         return rBuf;
 }
-		
-
- 
-//  uint16_t* new_bubblesort(const uint16_t* input, uint16_t len)
-//  {
-// 	 uint16_t* sorted = (uint16_t*)input;
-// 	 uint16_t x,y;
-// 	 
-// 	  for ( x=0; x < (len-1); x++)
-// 	 {
-// 		for (y=0; y < (len-x-1); y++)
-// 			if (sorted[y] > sorted[y+1]) swap(&sorted[y], &sorted[y+1]);
-// 	}			
-// 	return sorted;
-//  }
-//  
-//  
-//   uint8_t sortCheck(const uint16_t* arrayA, const uint16_t* arrayB, uint16_t len)
-//  {
-// 	 uint16_t i;
-// 	 
-// 	 for ( i=0; i < len; i++)
-// 	 {
-// 		if(arrayA[i] != arrayB[i]) return 1;
-// 	}			
-// 	return 0;
-//  }
  
