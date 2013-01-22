@@ -41,11 +41,13 @@
 							//Interrupts
 							//Entprellroutine
 							//Remote
+					
 							//Kommentierung
 							
 							
 							//  Power-Up Timer im Init nötig?		
 							//  EXT. QUARZ einstellen
+							
 							//	MOTOR_DIR & MOTOR_TYPE CHECK >>> ohne funktion >> Error: "IF WITHOUT EXPRESSION" 
 		
 		
@@ -98,11 +100,11 @@ void init(void)		//! Initialisation for Ports, Uart, ADC, IRQ and Watchdog
 
 int main(void)
 {
-	init();												//* Call init		//Rufe init auf
-	
-	uint8_t Go_A=0;				//! Drive Command memory for direction A
-	uint8_t Go_B=0;				//! Drive Command memory for direction B
-	uint8_t key;				//! Char code from keyboard, currently used for remote ctrl
+	init();													//* Call init		//Rufe init auf
+		
+	uint8_t Go_A=0;											//! Drive Command memory for direction A
+	uint8_t Go_B=0;											//! Drive Command memory for direction B
+	uint8_t key;											//! Char code from keyboard, currently used for remote ctrl
 	
 	while(1)
     {				 	
@@ -114,10 +116,10 @@ int main(void)
 	 error_limits_check();
 	 error_nfault_check();
 	 
-		if (error_reg != 0)									//* Fault detection			//Fehlererkennung
-		{													// Call "error_modul" if an error occurs		//Wenn ein Fehler vorliegt dann rufe  das Error-Modul auf
-			error_modul ();									
-		}
+	 if (error_reg != 0)	error_modul ();					//* Fault detection			//Fehlererkennung
+															// Call "error_modul" if an error occurs		//Wenn ein Fehler vorliegt dann rufe  das Error-Modul auf
+											
+		
 
 
 		if(GET_REMOTE_SWITCH)								//If the remote switch is set (PA4) the move direction can be remote controlled by pressing a or b...
