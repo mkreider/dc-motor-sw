@@ -110,7 +110,7 @@ int main(void)
 		DBPRINT("\f");										// Terminal form feed
 		
 	
-	 error_median_check();
+	 //error_median_check();
 	 error_limits_check();
 	 error_nfault_check();
 	 
@@ -318,7 +318,7 @@ int main(void)
 		wdt_reset();	
 		
 				
-		_delay_ms(111);
+		_delay_ms(222);
     }    
         
 	
