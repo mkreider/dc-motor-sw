@@ -67,7 +67,7 @@ void init_uart()
 {
 	UCSRB			=		(1<<RXEN)  | (1<<TXEN); //(1<<TXEN0); //(1<<RXEN0)  | (1<<TXEN0);		// RXEN und TXEN Enabled.
 	UCSRC			=		(1<<URSEL) | (1<<UCSZ1) | (1<<UCSZ0);		// Asynchron, no parity, 1 stop bit, 8 bit size, no CK.	
-	UBRRL			=		0x08;							// Baud rate 57.6k
+	UBRRL			=		0x10;							// Baud rate 57.6k
 	
 }	
 

@@ -17,7 +17,7 @@ void Interrupt_init (void)
 	MCUCR	= (1<<ISC11) | (1<<ISC10) | (1<<ISC01) | (1<<ISC00); //Trigger Int0 and Int1 on rising edge
 	
 	TIMSK	= (1<<OCIE1A);	//Activate Timer1 Output Compare Interrupt
-	TCCR1B	= (1<<WGM12) | (1<<CS11); //CLear on compare match, 8Mhz / Prescale 8 -> f = 1 MHz, T_Cnt = 1µs
+	TCCR1B	= (1<<WGM12) | (1<<CS11); // | (1<<CS10); //CLear on compare match, 8Mhz / Prescale 8 -> f = 1 MHz, T_Cnt = 1µs
 	OCR1A	= 3000; //set interval to 3ms
 	
 	sei();
