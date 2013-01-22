@@ -32,21 +32,19 @@
 #include "remote.h"
 #include "Motor.h"
 
-						
+
 						//* ToDo:
 							
 
 							//Spiegelung (Motorrichtung)
 							//Motortyp
-							//Interrupts
 							//Entprellroutine
 							//Remote
-					
 							//Kommentierung
 							
+							//Interrupts
 							
-							//  Power-Up Timer im Init nötig?		
-							//  EXT. QUARZ einstellen
+
 							
 							//	MOTOR_DIR & MOTOR_TYPE CHECK >>> ohne funktion >> Error: "IF WITHOUT EXPRESSION" 
 		

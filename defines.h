@@ -193,12 +193,12 @@ volatile ringbuffer* pRbIDrv;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 //* MOTOR DRIVER SLEEP/ ENABLE / PHASE / MODE
-#define PORT_DRV		PORTB
-#define DDR_DRV 		DDRB
+#define PORT_DRV		PORTA
+#define DDR_DRV 		DDRA
 #define DRV_SLEEP 		(1<<PA3)
-#define DRV_EN 			(1<<PA6)
-#define DRV_PHASE 		(1<<PA7)
-#define DRV_MODE 		(1<<PA5)
+#define DRV_EN 			(1<<PA5)
+#define DRV_PHASE 		(1<<PA6)
+#define DRV_MODE 		(1<<PA7)
 #define MOTOR_BREAK		PORT_DRV = (PORT_DRV & ~DRV_EN) | DRV_MODE
 #define SET_DRV_ARM  	PORT_DRV |=  DRV_SLEEP
 #define SET_DRV_SLEEP 	PORT_DRV &= ~DRV_SLEEP
