@@ -31,13 +31,13 @@
 #include "error.h"
 #include "remote.h"
 #include "Motor.h"
-
+#include "remote.h"
 
 						//* ToDo:
 							
 
 							//Spiegelung (Motorrichtung)
-							//Motortyp
+							//Motortyp (Stromgrenzen)
 							//Entprellroutine
 							//Remote
 							//Kommentierung
@@ -100,9 +100,7 @@ int main(void)
 {
 	init();													//* Call init		//Rufe init auf
 		
-	uint8_t Go_A=0;											//! Drive Command memory for direction A
-	uint8_t Go_B=0;											//! Drive Command memory for direction B
-	uint8_t key;											//! Char code from keyboard, currently used for remote ctrl
+uint8_t Go_BA;		
 	
 	while(1)
     {				 	
@@ -120,41 +118,7 @@ int main(void)
 		
 
 
-		if(GET_REMOTE_SWITCH)								//If the remote switch is set (PA4) the move direction can be remote controlled by pressing a or b...
-		{													//... on the keyboard of the PC which is connected through the UART with the motor control board
-			UPRINT("Modus: Remote\r\n");
-			key = uart_getc_nowait();						//defining "key" with a key-input through the uart
-			UPRINT("Key: ");								//print out a probably pressed key on the remote console
-			UPRINTN(key);
-			UPRINT("\r\n");
-			
-			if(key == 'a')									//If key "a" was pressed during remote mode, set Go_a=1 and Go_B=0
-			{
-				Go_A = 1;
-				Go_B = 0;	
-			}
-			
-			else if(key == 'b')								//If key "b" was pressed during remote mode, set Go_a=0 and Go_B=1
-			{
-				Go_A = 0;
-				Go_B = 1;	
-			}
-			
-			
-			
-			remote_modul ();								//unnecessary in the current version
-		}	
-				
-		else												//If the remote mode is deactivated, the direction buttons must be pressed direct at the front panel
-		{
-			UPRINT("Modus: Local\r\n\r\n");
-			
-			if(GET_BUTTON_A && GET_BUTTON_B) {Go_A = 0; Go_B = 0;}			//if both direction buttons are pressed simultaneously, Go_A and GO_B are 0, the motor stands still
-			if(GET_BUTTON_A) {Go_A = 1; Go_B = 0;}							//if switch A is pressed, set Go_a=1 and Go_B=0 for driving the motor to A
-			if(GET_BUTTON_B) {Go_A = 0; Go_B = 1;}							//if switch A is pressed, set Go_a=1 and Go_B=0 for driving the motor to B
-					 
-				 	
-		}
+
 			
 		
 		UPRINTN(lastLimit);													//give out the last pressed limit switch to the remote console
@@ -170,20 +134,23 @@ int main(void)
 	
 		if(GET_MOTOR_STOP)													//if the motor stop button is pressed... 
 		{																	
-			Go_A = 0; Go_B = 0;												//... set Go_A=0 and Go_B=0, ...
+			Go_BA = 0;												//... set Go_A=0 and Go_B=0, ...
 			Motor_stop();													//... call the "motorstop()" routine...
 			TURN_OFF(PORT_DIR_A_LED , DIR_A_LED );							//... and light off both direction LED's
 			TURN_OFF(PORT_DIR_B_LED , DIR_B_LED );
 		}
 		else																//if the motor stop button is not press, than check different status of the A/B buttons and limit switches
 		{
-			
-					
+			Go_BA = remote_modul();
+			UPRINT("go_BA ");
+			UPRINTN(Go_BA);	
+			UPRINT("\r\n");
+				
 			if (GET_LIMIT_A && !(GET_LIMIT_B))								//Limit switch A is pressed, Limit switch B is not pressed		//Endschalter A gedrueckt, Endschalter B nicht gedreuckt
 			{
 					DBPRINT("LA=1 LB=0\r\n");								//print out to the remote console which limit switch is pressed
 				
-					if (Go_B)												//if button B is pressed... 
+					if (Go_BA == GO_TO_B)												//if button B is pressed... 
 					{
 						// Fahre richtung B
 						Motor_RE();											//... call "Motor_RE" routine for driving the motor to B
@@ -194,9 +161,9 @@ int main(void)
 					
 						UPRINT("Fahre Richtung B\r\n");						//print out the driving direction int the remote console
 					}
-					if (Go_A)												//if button A is pressed, call "Motor_stop", because the motor can't drive to A, if the limit switch A is pressed
+					if (Go_BA == GO_TO_A)												//if button A is pressed, call "Motor_stop", because the motor can't drive to A, if the limit switch A is pressed
 					{
-						Go_A = 0;
+						Go_BA &= ~GO_TO_A;
 						Motor_stop();
 				
 						TURN_OFF(PORT_DIR_A_LED , DIR_A_LED );				//light off both direction LED's
@@ -211,7 +178,7 @@ int main(void)
 			{						
 					DBPRINT("LA=0 LB=1\r\n");								//print out which limit switch is pressed to the remote console 
 			
-					if (Go_A)												//Fahre A
+					if (Go_BA == GO_TO_A)												//Fahre A
 					{
 						// Fahre richtung A
 						Motor_FW();
@@ -222,9 +189,9 @@ int main(void)
 					
 						UPRINT("Fahre Richtung A\r\n");	
 					}
-					if (Go_B)								//Fahre B
+					if (Go_BA == GO_TO_B)								//Fahre B
 					{
-						Go_B = 0;
+						Go_BA &= ~GO_TO_B;
 						Motor_stop();
 					
 						TURN_OFF(PORT_DIR_A_LED , DIR_A_LED );
@@ -238,7 +205,7 @@ int main(void)
 			{
 					DBPRINT("LA=0 LB=0\r\n");
 				
-					if (Go_A)
+					if (Go_BA == GO_TO_A)
 					{
 						// Fahre richtung A
 						Motor_FW();
@@ -247,7 +214,7 @@ int main(void)
 					
 						UPRINT("Fahre Richtung A\r\n");
 					}
-					else if (Go_B)
+					else if (Go_BA == GO_TO_B)
 					{
 						// Fahre richtung B
 						Motor_RE();

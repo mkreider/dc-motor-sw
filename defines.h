@@ -4,15 +4,19 @@
 #include "median.h"
 
 #define PRINT 1
-#define DEBUG 1 
+#define DEBUG 0 
 
 #define PACKAGEDIL 1
 #define MOTOR_DIR_CHECK 1
 #define MOTOR_TYPE_CHECK 1
 
 #define THRES_UNDERVOLTAGE 19000/24
-#define THRES_CURRENT_DRV
 #define THRES_FUSE_RDV 
+
+#define THRES_CURRENT_DRV
+
+#define GO_TO_A 1
+#define GO_TO_B 2
 
 //Print debug messages depending on DEBUG 1 / 0
 #if PRINT
@@ -165,6 +169,24 @@ volatile ringbuffer* pRbIDrv;
 #define PORT_BUTTON_B	PORTC
 #define BUTTON_B	    (1<<PC1)
 #define GET_BUTTON_B	PIN_BUTTON_B & BUTTON_B
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+//* DRIVE A REMOTE
+#define DDR_BUTTON_A_RMT	DDRB
+#define PIN_BUTTON_A_RMT	PINB
+#define PORT_BUTTON_A_RMT	PORTB
+#define BUTTON_A_RMT	    (1<<PB3)
+#define GET_BUTTON_A_RMT	PIN_BUTTON_A_RMT & BUTTON_A_RMT
+
+
+//* DRIVE B REMOTE
+#define DDR_BUTTON_B_RMT	DDRB
+#define PIN_BUTTON_B_RMT	PINB
+#define PORT_BUTTON_B_RMT	PORTB
+#define BUTTON_B_RMT	    (1<<PB4)
+#define GET_BUTTON_B_RMT	PIN_BUTTON_B_RMT & BUTTON_B_RMT
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
