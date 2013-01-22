@@ -111,7 +111,7 @@ int main(void)
 		DBPRINT("\f");										// Terminal form feed
 		
 	
-	 //error_median_check();
+	 error_median_check();
 	 error_limits_check();
 	 error_nfault_check();
 	 
