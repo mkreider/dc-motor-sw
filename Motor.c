@@ -8,52 +8,45 @@
 #include "defines.h"
 #include "Motor.h"
 
-void Motor_stop(void)
+void Motor_stop(void)									//! motor stop function
 {
-
-	SET_DRV_SLEEP;								// set the Driver into sleep mode
-	MOTOR_BREAK;								// Motor Driver on break --> Sleep have to be activated for fast decay mode	
-	TURN_OFF(PORT_DIR_A_LED , DIR_A_LED );
-	TURN_OFF(PORT_DIR_B_LED , DIR_B_LED );
+	SET_DRV_SLEEP;										//! set the Driver into sleep mode
+	MOTOR_BREAK;										//! Motor Driver on break --> Sleep have to be activated for fast decay mode	
+	TURN_OFF(PORT_DIR_A_LED , DIR_A_LED );				//! turn off direction LED A
+	TURN_OFF(PORT_DIR_B_LED , DIR_B_LED );				//! turn off direction LED B
 	return;
 }
 
-void Motor_FW(void)
+void Motor_FW(void)										//! motor forward function
 {
-	
-	SET_DRV_ARM;								// set the Driver into sleep mode
-	SET_GO_A;
-																											// Error LED on			
-							// Motor Driver on break --> Sleep have to be activated for fast decay mode	
+	SET_DRV_ARM;										//! set the Driver to status armed
+	SET_GO_A;											//! motor drives to A
 	return;
 }
 
-void Motor_RE(void)
+void Motor_RE(void)										//! motor reverse function
 {
-	SET_DRV_ARM;								// set the Driver into sleep mode
-	SET_GO_B;
-									// Motor Driver on break --> Sleep have to be activated for fast decay mode	
+	SET_DRV_ARM;										//! set the Driver to status armed
+	SET_GO_B;											//! motor drives to B	
 	return;
 }
 
-void MOTOR_DIR (void)
+void MOTOR_DIR (void)									//! check which motor rotation direction is in use
 {
-	if(GET_JMP_MOT_DIR)		
+	if(GET_JMP_MOT_DIR)									//! check if motor dir bit is set		
 	{
 		DBPRINT("Turn Right");
-		//MOTOR_DIR_CHECK = 1;
 	}
 	 else
 	 {
 		DBPRINT("Turn Left");
-		//MOTOR_DIR_CHECK = 0;
 	 }		
 	return;
 }
 
-void MOTOR_TYPE(void)
+void MOTOR_TYPE(void)									//! check which motor type is connected
 {
-	if(GET_JMP_MOT_TYPE)   
+	if(GET_JMP_MOT_TYPE)								//! check if motor dir bit is set
 	{
 		DBPRINT("Typ A");
 		//MOTOR_TYPE_CHECK = 1;

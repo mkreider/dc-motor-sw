@@ -5,15 +5,15 @@ void ADC_init (void)
 {
 	uint16_t wert;
 	
-	ADMUX	= (0<<REFS1)|(1<<REFS0);
-	ADCSRA	= (1<<ADPS1)|(1<<ADPS0); 
-	ADCSRA |= (1<<ADEN);
+	ADMUX	= (1<<REFS0);									//! voltage reference , avcc with 5Volt is set
+	ADCSRA	= (1<<ADPS1)|(1<<ADPS0);						//! division factor between XTAL freq and adc input clock, set to 8
+	ADCSRA |= (1<<ADEN);									//! adc enable bit
 	
-	ADCSRA |= (1<<ADSC);
+	ADCSRA |= (1<<ADSC);									//! if this bit is set, the adc conversion will start
 	
 	
-	while (ADCSRA & (1<<ADSC)){}
-	wert	= ADCW;
+// 	while (ADCSRA & (1<<ADSC)){}							
+// 	wert	= ADCW;
 	
 	return;
 }

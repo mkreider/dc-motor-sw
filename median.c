@@ -1,19 +1,19 @@
 #include <avr/io.h>
 #include "median.h"
 
-void swap(uint16_t *a, uint16_t *b) 
+void swap(uint16_t *a, uint16_t *b)								//! swap function to interchange two values
 {
     uint16_t temp;
  
-    temp = *a;
-    *a = *b;
-    *b = temp; 
+    temp = *a;													// write a on temp
+    *a = *b;													// write b an a
+    *b = temp;													// write temp an b
 	
 	return; 
 }
 
 
-uint16_t median(const uint16_t* input)
+uint16_t median(const uint16_t* input)							//! median function, compare 5 values from the ring buffer to build the median
 {
 	uint16_t* pA = (uint16_t*)&input[0];
 	uint16_t* pB = (uint16_t*)&input[1];
@@ -76,7 +76,7 @@ uint16_t median(const uint16_t* input)
 }
 
 
-ringbuffer* rbInit(ringbuffer* rBuf)
+ringbuffer* rbInit(ringbuffer* rBuf)								//! 
 {
         uint8_t i;
         for(i=0; i<5; i++) rBuf->mem[i] = 0;
@@ -94,31 +94,4 @@ ringbuffer* rbInsert(ringbuffer* rBuf, uint16_t newVal)
 
         return rBuf;
 }
-		
-
- 
-//  uint16_t* new_bubblesort(const uint16_t* input, uint16_t len)
-//  {
-// 	 uint16_t* sorted = (uint16_t*)input;
-// 	 uint16_t x,y;
-// 	 
-// 	  for ( x=0; x < (len-1); x++)
-// 	 {
-// 		for (y=0; y < (len-x-1); y++)
-// 			if (sorted[y] > sorted[y+1]) swap(&sorted[y], &sorted[y+1]);
-// 	}			
-// 	return sorted;
-//  }
-//  
-//  
-//   uint8_t sortCheck(const uint16_t* arrayA, const uint16_t* arrayB, uint16_t len)
-//  {
-// 	 uint16_t i;
-// 	 
-// 	 for ( i=0; i < len; i++)
-// 	 {
-// 		if(arrayA[i] != arrayB[i]) return 1;
-// 	}			
-// 	return 0;
-//  }
  
