@@ -1,9 +1,22 @@
+/**
+ * @file uart.c
+ *
+ *
+ * @brief UART functions for ATMEGA32. Char, str, uint output and char input functions.
+ */
+
+/*
+ * Copyright (c) YYYY Author.
+ *
+ */
+
+
 #include <avr/io.h>
 #include "uart.h"
 
 
 // Kommentierung einfügen und pflegen sodass man es lesen kann >> DANKE!!
-//  >>>>>>>> bitte !
+// bitte !
 // ändern für MEGA 32A
 
 
@@ -15,7 +28,9 @@ void init_uart()
 	
 }
 
-void uartputs(const char* text)								//! nicht veränderbar wegen char das * ist zum anzeigen das es ein pointer ist
+
+void uartputs(const char* text)	
+
 {
 	char *ptext;											//! Kopie des orginals
 	ptext = (char*)text;
@@ -53,8 +68,9 @@ void uartput_uint16(uint16_t zahl)
 
 uint8_t uart_getc(void)
 {
-	while (!(UCSRA & (1<<RXC)));							//! wait until chars are available		UCSRA und RXC !!
-    return UDR;												//! give char from UDR to the caller
+	while (!(UCSRA & (1<<RXC)));   // wait until chars are available		UCSRA und RXC !!
+    return UDR;                   	// give char from UDR to the caller
+
 }
 
 
@@ -70,5 +86,6 @@ uint8_t uart_getc_nowait(void)
 		return 0;
 	}
 }
+
 
 
