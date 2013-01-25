@@ -35,7 +35,7 @@
 						//* ToDo:
 							
 
-<<<<<<< HEAD
+
 								//Spiegelung (Motorrichtung) >> wechsel über defines oder ähnliches  
 								//Motortyp	>> siehe unten
 							//Interrupts	>> Hr kreider
@@ -44,38 +44,22 @@
 					
 								//Kommentierung
 							
-=======
-							//Spiegelung (Motorrichtung)
-							//Motortyp (Stromgrenzen)
-							//Entprellroutine
-							//Remote
-							//Kommentierung
-							
-							//Interrupts
-							
 
->>>>>>> 5826ffcaf68a5ad00e24f5298fc24ca4ca141489
 							
 								//	MOTOR_DIR & MOTOR_TYPE CHECK >>> ohne funktion >> Error: "IF WITHOUT EXPRESSION" 
 		
 		
-<<<<<<< HEAD
-/**		
-  *	Ausführliche Beschreibung hier
-  */
+
 
 
 	uint8_t Go_A=0;											//! Drive Command memory for direction A
 	uint8_t Go_B=0;											//! Drive Command memory for direction B
-
-void init(void)										//! Initialization for Ports, Uart, ADC, IRQ and Watchdog	
-=======
 /**
  * @brief Initialises IOs, Motor driver, watchdog, UART, filtered ADC
  *
  */
-void init(void)		//! Initialisation for Ports, Uart, ADC, IRQ and Watchdog	
->>>>>>> 5826ffcaf68a5ad00e24f5298fc24ca4ca141489
+void init(void)											
+
 {			
 													
 	error_reg = 0x00;								//! Error Register							
@@ -122,34 +106,27 @@ int main(void)
 {
 	init();													//! Call init		
 		
-<<<<<<< HEAD
+
 // 	uint8_t Go_A=0;											//! Drive Command memory for direction A
 // 	uint8_t Go_B=0;											//! Drive Command memory for direction B
 	uint8_t key;											//! Char code from keyboard, currently used for remote ctrl
-=======
-uint8_t Go_BA;		
->>>>>>> 5826ffcaf68a5ad00e24f5298fc24ca4ca141489
+
 	
 	while(1)
     {				 	
 		UPRINT("\f");										//! Terminal form feeds
 		DBPRINT("\f");										
 		
-<<<<<<< HEAD
+
 	 error_median_check();								//! Call Median check
 	 error_limits_check();									//! Call Limit check	
 	 error_nfault_check();									//! Call nFault check
-=======
-	
-	 //error_median_check();
-	 error_limits_check();
-	 error_nfault_check();
->>>>>>> 5826ffcaf68a5ad00e24f5298fc24ca4ca141489
+
 	 
 	 if (error_reg != 0)	error_modul ();					//! Fault detection
 															//! Call "error_modul" if an error occurs		
 											
-<<<<<<< HEAD
+
 		if(GET_REMOTE_SWITCH)								//! If the remote switch is set (PA4) the move direction can be remote controlled by pressing a or b...
 		{													//! ... on the keyboard of the PC which is connected through the UART with the motor control board
 			UPRINT("Modus: Remote\r\n");
@@ -183,12 +160,7 @@ uint8_t Go_BA;
 			if(GET_BUTTON_B) {Go_A = 0; Go_B = 1;}								//! if switch B is pressed, set Go_a=0 and Go_B=1 for driving the motor to B
 					 		 	
 		}
-=======
-		
 
-
-
->>>>>>> 5826ffcaf68a5ad00e24f5298fc24ca4ca141489
 			
 		
 		UPRINTN(lastLimit);														//! give out the last pressed limit switch to the remote console
@@ -202,7 +174,7 @@ uint8_t Go_BA;
 		if(GET_LIMIT_B) TURN_ON(PORT_LMT_B_LED, LMT_B_LED);						//! check if  limit switch B is pressed and show it by LED on the front panel
 		else			TURN_OFF(PORT_LMT_B_LED, LMT_B_LED);					//! if limit switch B is not pressed, light off the limit LED for limit switch B
 	
-<<<<<<< HEAD
+
 	
 // 		if(GET_MOTOR_STOP)														//! if the motor stop button is pressed... 
 // 		{																	
@@ -216,31 +188,13 @@ uint8_t Go_BA;
 			
 					
 			if (GET_LIMIT_A && !(GET_LIMIT_B))									//! Limit switch A is pressed, Limit switch B is not pressed		//Endschalter A gedrueckt, Endschalter B nicht gedreuckt
-=======
-		if(GET_MOTOR_STOP)													//if the motor stop button is pressed... 
-		{																	
-			Go_BA = 0;												//... set Go_A=0 and Go_B=0, ...
-			Motor_stop();													//... call the "motorstop()" routine...
-			TURN_OFF(PORT_DIR_A_LED , DIR_A_LED );							//... and light off both direction LED's
-			TURN_OFF(PORT_DIR_B_LED , DIR_B_LED );
-		}
-		else																//if the motor stop button is not press, than check different status of the A/B buttons and limit switches
-		{
-			Go_BA = remote_modul();
-			UPRINT("go_BA ");
-			UPRINTN(Go_BA);	
-			UPRINT("\r\n");
-				
-			if (GET_LIMIT_A && !(GET_LIMIT_B))								//Limit switch A is pressed, Limit switch B is not pressed		//Endschalter A gedrueckt, Endschalter B nicht gedreuckt
->>>>>>> 5826ffcaf68a5ad00e24f5298fc24ca4ca141489
+
 			{
 					DBPRINT("LA=1 LB=0\r\n");									//! print out to the remote console which limit switch is pressed
 				
-<<<<<<< HEAD
+
 					if (Go_B)													//! if button B is pressed... 
-=======
-					if (Go_BA == GO_TO_B)												//if button B is pressed... 
->>>>>>> 5826ffcaf68a5ad00e24f5298fc24ca4ca141489
+
 					{
 						Motor_RE();												//! ... call "Motor_RE" routine for driving the motor to B
 					
@@ -249,17 +203,12 @@ uint8_t Go_BA;
 					
 						UPRINT("Fahre Richtung B\r\n");							//! print out the driving direction int the remote console
 					}
-<<<<<<< HEAD
+
 					if (Go_A)													//! if button A is pressed, call "Motor_stop", because the motor can't drive to A, if the limit switch A is pressed
 					{
 						Go_A = 0;
 						Motor_stop();											//! Call Motor stop
-=======
-					if (Go_BA == GO_TO_A)												//if button A is pressed, call "Motor_stop", because the motor can't drive to A, if the limit switch A is pressed
-					{
-						Go_BA &= ~GO_TO_A;
-						Motor_stop();
->>>>>>> 5826ffcaf68a5ad00e24f5298fc24ca4ca141489
+
 				
 						TURN_OFF(PORT_DIR_A_LED , DIR_A_LED );					//! light off both direction LED's
 						TURN_OFF(PORT_DIR_B_LED , DIR_B_LED );
@@ -268,16 +217,13 @@ uint8_t Go_BA;
 					}		
 			}
 			
-<<<<<<< HEAD
-				
+	
  			if (GET_LIMIT_B && !(GET_LIMIT_A))									//! Limit switch B is pressed, Limit switch A is not pressed		//Endschalter A gedrueckt, Endschalter B nicht gedreuckt
 			{
 					DBPRINT("LA=0 LB=1\r\n");									//! print out to the remote console which limit switch is pressed
 				
 					if (Go_A)													//! if button A is pressed... 
-=======
-					if (Go_BA == GO_TO_A)												//Fahre A
->>>>>>> 5826ffcaf68a5ad00e24f5298fc24ca4ca141489
+
 					{
 						Motor_FW();												//! ... call "Motor_FW" routine for driving the motor to B
 					
@@ -286,11 +232,9 @@ uint8_t Go_BA;
 					
 						UPRINT("Fahre Richtung B\r\n");							//! print out the driving direction int the remote console
 					}
-<<<<<<< HEAD
+
 					if (Go_B)													//! if button B is pressed, call "Motor_stop", because the motor can't drive to A, if the limit switch A is pressed
-=======
-					if (Go_BA == GO_TO_B)								//Fahre B
->>>>>>> 5826ffcaf68a5ad00e24f5298fc24ca4ca141489
+
 					{
 						Go_BA &= ~GO_TO_B;
 						Motor_stop();
@@ -307,11 +251,9 @@ uint8_t Go_BA;
 			{
 					DBPRINT("LA=0 LB=0\r\n");
 				
-<<<<<<< HEAD
+
 					if (Go_A)													//! if button A is pressed ...
-=======
-					if (Go_BA == GO_TO_A)
->>>>>>> 5826ffcaf68a5ad00e24f5298fc24ca4ca141489
+
 					{
 						Motor_FW();												//! call motor forward function
 						TURN_ON(PORT_DIR_A_LED , DIR_A_LED );					//! turn on direction LED A 
@@ -319,11 +261,9 @@ uint8_t Go_BA;
 					
 						UPRINT("Fahre Richtung A\r\n");
 					}
-<<<<<<< HEAD
+
 					else if (Go_B)												//! if button B is pressed...
-=======
-					else if (Go_BA == GO_TO_B)
->>>>>>> 5826ffcaf68a5ad00e24f5298fc24ca4ca141489
+
 					{
 						Motor_RE();												//! call motor reverse function
 						TURN_ON(PORT_DIR_B_LED , DIR_B_LED );					//! turn on direction LED B
@@ -388,11 +328,8 @@ uint8_t Go_BA;
 		wdt_reset();	
 		
 				
-<<<<<<< HEAD
 		_delay_ms(10);
-=======
-		_delay_ms(222);
->>>>>>> 5826ffcaf68a5ad00e24f5298fc24ca4ca141489
+
     }    
         
 	

@@ -177,7 +177,7 @@ volatile ringbuffer* pRbIDrv;
 #define DDR_BUTTON_A_RMT	DDRB
 #define PIN_BUTTON_A_RMT	PINB
 #define PORT_BUTTON_A_RMT	PORTB
-<<<<<<< HEAD
+
 #define BUTTON_A_RMT	    (1<<PB4)
 #define GET_BUTTON_A_RMT	PIN_BUTTON_A_RMT & BUTTON_A_RMT
 
@@ -186,17 +186,7 @@ volatile ringbuffer* pRbIDrv;
 #define PIN_BUTTON_B_RMT	PINB
 #define PORT_BUTTON_B_RMT	PORTB
 #define BUTTON_B_RMT	    (1<<PB3)
-=======
-#define BUTTON_A_RMT	    (1<<PB3)
-#define GET_BUTTON_A_RMT	PIN_BUTTON_A_RMT & BUTTON_A_RMT
 
-
-//* DRIVE B REMOTE
-#define DDR_BUTTON_B_RMT	DDRB
-#define PIN_BUTTON_B_RMT	PINB
-#define PORT_BUTTON_B_RMT	PORTB
-#define BUTTON_B_RMT	    (1<<PB4)
->>>>>>> 5826ffcaf68a5ad00e24f5298fc24ca4ca141489
 #define GET_BUTTON_B_RMT	PIN_BUTTON_B_RMT & BUTTON_B_RMT
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -232,11 +222,9 @@ volatile ringbuffer* pRbIDrv;
 #define DRV_EN 			(1<<PA5)
 #define DRV_PHASE 		(1<<PA6)
 #define DRV_MODE 		(1<<PA7)
-<<<<<<< HEAD
+
 #define MOTOR_BREAK		PORT_DRV = (PORT_DRV & ~DRV_EN) | DRV_PHASE | DRV_MODE
-=======
-#define MOTOR_BREAK		PORT_DRV = (PORT_DRV & ~DRV_EN) | DRV_MODE
->>>>>>> 5826ffcaf68a5ad00e24f5298fc24ca4ca141489
+
 #define SET_DRV_ARM  	PORT_DRV |=  DRV_SLEEP
 #define SET_DRV_SLEEP 	PORT_DRV &= ~DRV_SLEEP
 #define SET_GO_A  		PORT_DRV = (PORT_DRV & ~(DRV_MODE)) | (DRV_EN | DRV_PHASE) 

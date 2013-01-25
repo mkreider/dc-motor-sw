@@ -41,22 +41,7 @@ void init_uart(void);
  *
  */
 uint8_t uart_getc(void);
-<<<<<<< HEAD
-=======
 
-/**
- * @brief ???
- *
- */
-void test_uartgetc(void);
-
-/**
- * @brief Fetches a single character from the serial console. Checks RX buffer and returns immediately.
- *
- * @retval Return 0 if RX was empty, else the char code
- *
- */
->>>>>>> 5826ffcaf68a5ad00e24f5298fc24ca4ca141489
 uint8_t uart_getc_nowait(void);
 
 #endif
