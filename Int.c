@@ -1,3 +1,15 @@
+/**
+ * @file int.c
+ *
+ *
+ * @brief Provides interrupt routines for timer1 and watchdog
+ */
+
+/*
+ * Copyright (c) YYYY Author.
+ *
+ */
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "defines.h"

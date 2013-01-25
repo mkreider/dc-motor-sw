@@ -1,21 +1,20 @@
-/*
- * Projekt DC Motorsteuerung
+/**
+ * @file main.c
  *
- * Herz Tim
+ *
+ * @brief Projekt DC Motorsteuerung
+ */
+
+/*
+ *
+ * Tim Herz 
  * Nadja Fischer
- * Burkhard Philip 
- * Karadeniz Burak
+ * Philip Burkhard 
+ * Burak Karadeniz 
  *
  * GSI Helmholtszzentrum für Schwerionenforschung GmbH
  * 64291 Darmstadt
  * Planckstraße 1
- * 
- 
- * main.c
-  
- * Created: 13.11.2012 13:45:06
- *
- * Last edited on: 22.01.2013
  */ 
 
 #include <avr/io.h>
@@ -49,9 +48,10 @@
 							//	MOTOR_DIR & MOTOR_TYPE CHECK >>> ohne funktion >> Error: "IF WITHOUT EXPRESSION" 
 		
 		
-/**		
-  *	
-  */
+/**
+ * @brief Initialises IOs, Motor driver, watchdog, UART, filtered ADC
+ *
+ */
 void init(void)		//! Initialisation for Ports, Uart, ADC, IRQ and Watchdog	
 {			
 													//* Einfügen der benötigten Konstanten und Variablen

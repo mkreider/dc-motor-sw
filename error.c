@@ -1,3 +1,16 @@
+/**
+ * @file error.c
+ *
+ *
+ * @brief Error handling: limit switches, overcurrent, undervoltage, driver errors, watchdog 
+ */
+
+/*
+ * Copyright (c) YYYY Author.
+ *
+ */
+ï»¿
+
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
@@ -8,6 +21,8 @@
 #include "Motor.h"
 #include "error.h"
 #include "median.h"
+
+
 
 void error_median_check (void)
 {
@@ -28,7 +43,7 @@ void error_median_check (void)
 void error_limits_check (void) 
 {
 	if (GET_LIMIT_A && GET_LIMIT_B)				//! Check limit switches		//Endschalter abfrage
-		{											//  Run an error process if both limit switches are pressed			//Falls beide Endschalter gedrückt, dann führe Fehler verarbeitung aus.
+		{											//  Run an error process if both limit switches are pressed			//Falls beide Endschalter gedrÃ¼ckt, dann fÃ¼hre Fehler verarbeitung aus.
 		error_reg |= ERR_LIMITS;
 		error_modul (); 
 		}			
@@ -36,7 +51,7 @@ void error_limits_check (void)
 
 void error_nfault_check (void)
 {
-	 if (GET_NFAULT)							//* Check nFAULT form the motor driver		//nFault Prüfung						
+	 if (GET_NFAULT)							//* Check nFAULT form the motor driver		//nFault PrÃ¼fung						
  	{
  		error_reg |= ERR_NFAULT;				// Set bit1 of the error register if a nFault error occurs		 //Wenn nFault Fehler meldet dann setze Pin1 des Error Registers auf 1 
  	}

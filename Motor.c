@@ -1,9 +1,15 @@
-﻿/*
- * Motor.c
+/**
+ * @file motor.c
  *
- * Created: 17.12.2012 10:19:25
- *  Author: Tim Herz / Burak Karadeniz
- */ 
+ *
+ * @brief Control functions for the <Chip type> motor driver
+ */
+
+/*
+ * Copyright (c) YYYY Author.
+ *
+ */
+
 #include <avr/io.h>
 #include "defines.h"
 #include "Motor.h"

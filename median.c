@@ -1,3 +1,15 @@
+/**
+ * @file median.c
+ *
+ *
+ * @brief Median filter function to smooth ADC samples
+ */
+
+/*
+ * Copyright (c) YYYY Author.
+ *
+ */
+
 #include <avr/io.h>
 #include "median.h"
 
