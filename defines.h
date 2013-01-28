@@ -3,14 +3,16 @@
 
 #include "median.h"
 
-#define PRINT 1
-#define DEBUG 0 
+
+
+#define PRINT 1 //! Turns normal print statements on or off
+#define DEBUG 1 //! Turns debug print statements on or off
 
 #define PACKAGEDIL 1
 #define MOTOR_DIR_CHECK 1
 #define MOTOR_TYPE_CHECK 1
 
-#define THRES_UNDERVOLTAGE 19000/24
+#define THRES_UNDERVOLTAGE 19000/24 //! Threshold for ADC to compare against for undervoltage detection
 #define THRES_FUSE_RDV 
 
 #define THRES_CURRENT_DRV
@@ -47,15 +49,19 @@
 
 volatile uint8_t error_reg;				//	Error Register for fault detection 											
 
+volatile uint16_t dbg_medIDrv;
+volatile uint16_t dbg_medU24;
+volatile uint16_t dbg_medUFuse;
+
 uint16_t medIDrv;
 uint16_t medU24;
 uint16_t medUFuse;
 volatile uint8_t lastLimit;
 volatile uint8_t measrdy;
 
-volatile ringbuffer rbUFuse;
-volatile ringbuffer rbU24;
-volatile ringbuffer rbIDrv;
+ringbuffer rbUFuse;
+ringbuffer rbU24;
+ringbuffer rbIDrv;
 volatile ringbuffer* pRbUFuse;
 volatile ringbuffer* pRbU24;  
 volatile ringbuffer* pRbIDrv; 

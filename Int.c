@@ -1,15 +1,3 @@
-/**
- * @file int.c
- *
- *
- * @brief Provides interrupt routines for timer1 and watchdog
- */
-
-/*
- * Copyright (c) YYYY Author.
- *
- */
-
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "defines.h"
@@ -32,7 +20,7 @@ void Interrupt_init (void)
 	MCUCSR  = (1<<ISC2);												//! external interrupt INT2 set on rising edge
 	
 	TIMSK	= (1<<OCIE1A);												//" Activate Timer1 Output Compare Interrupt
-	TCCR1B	= (1<<WGM12) | (1<<CS11);									// | (1<<CS10); //! CLear on compare match, 8Mhz / Prescale 8 -> f = 1 MHz, T_Cnt = 1µs
+	TCCR1B	= (1<<WGM12) | (1<<CS12) | (1<<CS10);									// | (1<<CS10); //! CLear on compare match, 8Mhz / Prescale 8 -> f = 1 MHz, T_Cnt = 1µs
 	OCR1A	= 300;														//! set interval to 3ms
 	
 	sei();
@@ -50,11 +38,15 @@ void WDT_init (void)													//! watchdog initialization
 ISR(TIMER1_COMPA_vect)													//! timer interrupt for the measuring
 {
 	if(measrdy < 5) measrdy++;											//! check median after 4 measurements
-	
+	/*
 	rbInsert(pRbIDrv, ADC_Read(I_DRV_ADC_CH));							//! load adc values into the ringbuffer
  	rbInsert(pRbU24,  ADC_Read(U_24V_ADC_CH));
 	rbInsert(pRbUFuse, ADC_Read(U_FUSE_ADC_CH));
-	
+	*/
+
+	dbg_medIDrv = ADC_Read(I_DRV_ADC_CH);
+	dbg_medU24 = ADC_Read(U_24V_ADC_CH);
+	dbg_medUFuse = ADC_Read(U_FUSE_ADC_CH);
 }
 
 

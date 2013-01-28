@@ -1,18 +1,13 @@
-/**
- * @file motor.c
+﻿/*
+ * Motor.c
  *
- *
- * @brief Control functions for the <Chip type> motor driver
- */
-
-/*
- * Copyright (c) YYYY Author.
- *
- */
-
+ * Created: 17.12.2012 10:19:25
+ *  Author: Tim Herz / Burak Karadeniz
+ */ 
 #include <avr/io.h>
 #include "defines.h"
 #include "Motor.h"
+#include "uart.h"
 
 void Motor_stop(void)									//! motor stop function
 {

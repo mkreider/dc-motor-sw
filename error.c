@@ -9,7 +9,6 @@
  * Copyright (c) YYYY Author.
  *
  */
-﻿
 
 #include <avr/io.h>
 #include <util/delay.h>

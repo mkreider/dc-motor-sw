@@ -1,15 +1,3 @@
-/**
- * @file median.c
- *
- *
- * @brief Median filter function to smooth ADC samples
- */
-
-/*
- * Copyright (c) YYYY Author.
- *
- */
-
 #include <avr/io.h>
 #include "median.h"
 
@@ -91,8 +79,8 @@ uint16_t median(const uint16_t* input)							//! median function, compare 5 valu
 ringbuffer* rbInit(ringbuffer* rBuf)								//! 
 {
         uint8_t i;
-        for(i=0; i<5; i++) rBuf->mem[i] = 0;
-        rBuf->pInsPos = &rBuf->mem[0];
+        for(i=0; i<5; i++) rBuf->mem[i] = 0;	// initialise buffer to zeroes
+        rBuf->pInsPos = &rBuf->mem[0];			// let Insertion Position point to first element of mem array (mem[0]) 
 
         return rBuf;
 }
@@ -100,8 +88,8 @@ ringbuffer* rbInit(ringbuffer* rBuf)								//!
 
 ringbuffer* rbInsert(ringbuffer* rBuf, uint16_t newVal)
 {
-        *rBuf->pInsPos = newVal;
-        if(rBuf->pInsPos - &rBuf->mem[0] == 4)  rBuf->pInsPos = &rBuf->mem[0];
+        *rBuf->pInsPos = newVal;	// let the value at the insertion position be newVal
+        if(rBuf->pInsPos - &rBuf->mem[0] == 4)  rBuf->pInsPos = &rBuf->mem[0]; // Ring: if insertion position is array element 4, reset to 0, else increment
         else                            		rBuf->pInsPos++;
 
         return rBuf;

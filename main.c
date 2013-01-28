@@ -43,7 +43,7 @@
 										
 					
 								//Kommentierung
-							
+								// Vorwiderstand an Uart (MAX...)
 
 							
 								//	MOTOR_DIR & MOTOR_TYPE CHECK >>> ohne funktion >> Error: "IF WITHOUT EXPRESSION" 
@@ -105,20 +105,18 @@ void init(void)
 int main(void)
 {
 	init();													//! Call init		
-		
-
-// 	uint8_t Go_A=0;											//! Drive Command memory for direction A
-// 	uint8_t Go_B=0;											//! Drive Command memory for direction B
+	uint8_t Go_A=0;											//! Drive Command memory for direction A
+	uint8_t Go_B=0;		
 	uint8_t key;											//! Char code from keyboard, currently used for remote ctrl
 
 	
 	while(1)
     {				 	
 		UPRINT("\f");										//! Terminal form feeds
-		DBPRINT("\f");										
+									
 		
 
-	 error_median_check();								//! Call Median check
+	// error_median_check();								//! Call Median check
 	 error_limits_check();									//! Call Limit check	
 	 error_nfault_check();									//! Call nFault check
 
@@ -230,13 +228,13 @@ int main(void)
 						TURN_ON(PORT_DIR_A_LED , DIR_A_LED );					//! turn on the LED for driving to A
 						TURN_OFF(PORT_DIR_B_LED , DIR_B_LED );					//! turn off the LED for driving B, if the motor was driving to A but not reached it before the driving direction was switched
 					
-						UPRINT("Fahre Richtung B\r\n");							//! print out the driving direction int the remote console
+						UPRINT("Fahre Richtung A\r\n");							//! print out the driving direction int the remote console
 					}
 
 					if (Go_B)													//! if button B is pressed, call "Motor_stop", because the motor can't drive to A, if the limit switch A is pressed
 
 					{
-						Go_BA &= ~GO_TO_B;
+						Go_B = 0;
 						Motor_stop();
 				
 						TURN_OFF(PORT_DIR_A_LED , DIR_A_LED );					//! light off both direction LED's
@@ -255,6 +253,7 @@ int main(void)
 					if (Go_A)													//! if button A is pressed ...
 
 					{
+						Go_B = 0;
 						Motor_FW();												//! call motor forward function
 						TURN_ON(PORT_DIR_A_LED , DIR_A_LED );					//! turn on direction LED A 
 						TURN_OFF(PORT_DIR_B_LED , DIR_B_LED );					//! turn off direction LED B
@@ -274,16 +273,22 @@ int main(void)
 			}
 		//}		
 		
-
+/*
 		 medIDrv	= median(&pRbIDrv->mem[0]);									//! sample median for driver current
 		 medU24		= median(&pRbU24->mem[0]);									//! sample median for supply voltage
 		 medUFuse	= median(&pRbUFuse->mem[0]);								//! sample median for fuse voltage
-	     DBPRINT("\r\n\r\nMedian output:\r\n");									//! print out the different median values
-		 DBPRINTN((medIDrv*24)/20);												
+	*/
+
+	medIDrv = dbg_medIDrv;
+	medU24 = dbg_medU24;
+	medUFuse = dbg_medUFuse;
+     
+		 DBPRINT("\r\n\r\nMedian output:\r\n");									//! print out the different median values
+		 DBPRINTN(medIDrv);												
 		 DBPRINT("\t mA medIDrv \r\n");
-		 DBPRINTN(medU24*24);
+		 DBPRINTN(medU24);
 		 DBPRINT("\t mV medU24 \r\n");
-		 DBPRINTN(medUFuse*24);
+		 DBPRINTN(medUFuse);
 		 DBPRINT("\t mV medUFuse \r\n");
 				
 					
@@ -320,7 +325,7 @@ int main(void)
 				 
 		 DBPRINT("\t");
 				 
-		 if			(PORT_DRV & DRV_MODE)				DBPRINT("1");							//! if driver_mode is set, set motort mode 1			// motor mode
+		 if			(PORT_DRV & DRV_MODE)				DBPRINT("1");							//! if driver_mode is set, set motor mode 1			// motor mode
 		 else											DBPRINT("0");
 				 
 		DBPRINT("\r\n");
@@ -328,7 +333,7 @@ int main(void)
 		wdt_reset();	
 		
 				
-		_delay_ms(10);
+		_delay_ms(100);
 
     }    
         

@@ -1,13 +1,10 @@
 /**
- * @file uart.c
+ * @@file uart.c
  *
  *
- * @brief UART functions for ATMEGA32. Char, str, uint output and char input functions.
- */
-
-/*
- * Copyright (c) YYYY Author.
- *
+ * @@brief UART functions. Init, read chars, write chars, write 8/16b uints
+ * 
+ *  blabla
  */
 
 
@@ -16,10 +13,14 @@
 
 
 // Kommentierung einfügen und pflegen sodass man es lesen kann >> DANKE!!
-// bitte !
+//  >>>>>>>> bitte !
 // ändern für MEGA 32A
 
-
+/**
+ * @@brief Initialises the UART on an ATMEGA32 to 57600 baud, 8N1 
+ *
+ *
+ */
 void init_uart()
 {
 	UCSRB			=		(1<<RXEN)  | (1<<TXEN);						//! RXEN and TXEN Enabled.
@@ -28,9 +29,13 @@ void init_uart()
 	
 }
 
-
-void uartputs(const char* text)	
-
+/**
+ * @brief Writes a string to the serial console
+ *
+ * @param[in] text The c string to write
+ *
+ */
+void uartputs(const char* text)								//! nicht veränderbar wegen char das * ist zum anzeigen das es ein pointer ist
 {
 	char *ptext;											//! Kopie des orginals
 	ptext = (char*)text;
@@ -42,13 +47,26 @@ void uartputs(const char* text)
 	}
 }
 
-void uartputc(char wort)				
+/**
+ * @ brief Writes a single character to the serial console
+ *
+ * @@param[in] chr The char to write
+ *
+ */
+
+void uartputc(char chr)				
 {
 	while(!((UCSRA)&(1<<UDRE)));
-	UDR=wort;
+	UDR=chr;
 }
 
-void uartput_uint16(uint16_t zahl)
+/**
+ * @@brief Writes a 8/16 bit unsigned int as ASCII to the serial console
+ *
+ * @@param[in] num The unisgned int to write
+ *
+ */
+void uartput_uint16(uint16_t num)
 {
 	uint16_t div	=	10000;
 	uint16_t erg;											//! erg_ ergebnis
@@ -56,24 +74,33 @@ void uartput_uint16(uint16_t zahl)
 		
 	while (div)
 	{
-		erg = (zahl/div);
+		erg = (num/div);
 		if(erg != 0) fn = 0; 
 		if((!fn)|(div==1)) uartputc((char)(erg+48));		//! ausgabe der zahl
 		
-		zahl %= div;
+		num %= div;
 		div /= 10;
 	}
 }	
 
-
+/**
+ * @@brief Fetches a single character from the serial console. Waits until char is received.
+ *
+ * @ return Unsigned char received from console
+ *
+ */
 uint8_t uart_getc(void)
 {
-	while (!(UCSRA & (1<<RXC)));   // wait until chars are available		UCSRA und RXC !!
-    return UDR;                   	// give char from UDR to the caller
-
+	while (!(UCSRA & (1<<RXC)));							//! wait until chars are available		UCSRA und RXC !!
+    return UDR;												//! give char from UDR to the caller
 }
 
-
+/**
+ * @@brief Fetches a single character from the serial console. Returns immediatley. 
+ *
+ * @ return Unsigned char received from console or Zero if RX buffer was empty
+ *
+ */
 uint8_t uart_getc_nowait(void)
 {
 	if(UCSRA & (1<<RXC))
@@ -86,6 +113,5 @@ uint8_t uart_getc_nowait(void)
 		return 0;
 	}
 }
-
 
 
